@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Iara Games</title>
+    <link rel="stylesheet" href="reset.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  </head>
+
+  <body class="modo-escuro">
+    <!-- Cabeçalho -->
+    <header class="cabecalho">
+      <div class="conteudo-cabecalho">
+        <h1>
+          <a href="#" class="logo"><img src="logo.png" alt="Iara Games Logo" />Iara Games</a>
+        </h1>
+        <nav aria-label="Menu principal">
+          <ul class="menu-navegacao">
+            <li><a href="#">Loja</a></li>
+            <li><a href="#">biblioteca</a></li>
+            <li><a href="#">Fórum</a></li>
+            <li><a href="#">Suporte</a></li>
+            <li><a href="#">Meu Perfil</a></li>
+          </ul>
+        </nav>
+        <div class="acoes-usuario">
+          <button class="botao-instalar" aria-label="Instalar o aplicativo Iara-Games">Instalar Iara-Games</button>
+          <button class="botao-acao login-btn" aria-label="Fazer login na sua conta Iara Games">Logar</button>
+          <a href="cadastro.html" class="botao-acao" aria-label="Cadastrar nova conta Iara Games">Cadastre-se</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Subnavegação -->
+    <nav class="sub-navegacao" aria-label="Menu secundário">
+      <div class="conteudo-subnavegacao">
+        <ul class="menu-subnavegacao">
+          <li><a href="#">Minha Lista</a></li>
+          <li><a href="#">Categorias</a></li>
+          <li><a href="#">Novidades</a></li>
+          <li><a href="#">Top 5 da IARA</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Conteúdo Principal -->
+    <main class="conteudo-principal">
+      <!-- Banner do Festival -->
+      <section class="banner-festival" aria-labelledby="titulo-festival">
+        <div class="conteudo-festival">
+          <h2 id="titulo-festival" class="logo-festival">Iara Games de Verão</h2>
+          <p class="datas-festival">22 de Setembro</p>
+          <p class="descricao-festival">Descontos, Demos e Muito Mais</p>
+        </div>
+      </section>
+
+      <!-- Seção em Destaque -->
+      <section class="secao-destaque" aria-labelledby="titulo-destaques">
+        <aside class="barra-lateral" aria-label="Navegação lateral de recomendações">
+          <h2 id="titulo-destaques">Marcadores</h2>
+          <a href="#" class="item-barra">Recomendados</a>
+          <a href="#" class="item-barra">Lançamentos</a>
+          <a href="#" class="item-barra">5 Estrelas</a>
+          <a href="#" class="item-barra">Por Amigos</a>
+          <a href="#" class="item-barra">Por Curadores</a>
+          <a href="#" class="item-barra">Mais Vendidos</a>
+          <a href="#" class="item-barra">Populares</a>
+          <a href="#" class="item-barra">Melhor Avaliação</a>
+          <a href="#" class="item-barra">Queridos dos Influêncers</a>
+          <a href="#" class="item-barra">Tags</a>
+          <a href="#" class="item-barra">Iara Deck</a>
+        </aside>
+
+        <div class="principal-destaque">
+          <div class="container-carrossel">
+            <input type="radio" id="slide_1" name="carrossel" checked />
+            <input type="radio" id="slide_2" name="carrossel" />
+            <input type="radio" id="slide_3" name="carrossel" />
+
+            <div class="slides-carrossel">
+              <div class="slide" id="slide-1">
+                <img src="https://via.placeholder.com/980x400/4A90E2/FFFFFF?text=JOGO+DESTAQUE+1" alt="Imagem do Jogo Destaque 1" />
+              </div>
+              <div class="slide" id="slide-2">
+                <img src="https://via.placeholder.com/980x400/7B68EE/FFFFFF?text=JOGO+DESTAQUE+2" alt="Imagem do Jogo Destaque 2" />
+              </div>
+              <div class="slide" id="slide-3">
+                <img src="https://via.placeholder.com/980x400/90EE90/FFFFFF?text=JOGO+DESTAQUE+3" alt="Imagem do Jogo Destaque 3" />
+              </div>
+            </div>
+          </div>
+          <div class="navegacao-carrossel">
+            <label for="slide_1" class="ponto-navegacao" aria-label="Ir para o slide 1"></label>
+            <label for="slide_2" class="ponto-navegacao" aria-label="Ir para o slide 2"></label>
+            <label for="slide_3" class="ponto-navegacao" aria-label="Ir para o slide 3"></label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Seção Iara Games Deck -->
+      <section class="secao-deck" aria-labelledby="titulo-deck">
+        <img src="deck.jpg" alt="Imagem do console portátil Iara Deck" class="imagem-deck" />
+        <div class="conteudo-deck">
+          <h2 id="titulo-deck">🎮 Jogue no Iara Deck.</h2>
+          <p>Curta sua biblioteca Iara Games em qualquer lugar com o portátil gamer.</p>
+        </div>
+      </section>
+
+      <!-- Seção de Descontos -->
+      <section class="secao-descontos" aria-labelledby="titulo-promocoes">
+        <div class="cabecalho-secao">
+          <h2 id="titulo-promocoes" class="titulo-secao">Promoções e Eventos</h2>
+          <a href="#" class="mais-jogos">Ver Mais</a>
+        </div>
+        <div class="grid-jogos">
+          <!-- Cards existentes -->
+          <article class="card-jogo" tabindex="0" role="link" data-href="#" aria-label="Microsoft Flight Simulator - abrir página do jogo">
+            <img src="flight-simulator.jpg" alt="Microsoft Flight Simulator" class="imagem-jogo" />
+            <div class="detalhes-jogo">
+              <h3 class="nome-jogo">Microsoft Flight Simulator</h3>
+              <p class="preco-jogo">
+                <span class="desconto">-60%</span>
+                <span class="preco-original">R$ 299,00</span>
+                <span class="preco-final">R$ 119,00</span>
+              </p>
+            </div>
+          </article>
+
+          <article class="card-jogo" tabindex="0" role="link" data-href="#">
+            <img src="devil-may-cry.jpg" alt="Devil May Cry 5" class="imagem-jogo" />
+            <div class="detalhes-jogo">
+              <h3 class="nome-jogo">Devil May Cry 5</h3>
+              <p class="preco-jogo">
+                <span class="desconto">-67%</span>
+                <span class="preco-original">R$ 149,00</span>
+                <span class="preco-final">R$ 49,00</span>
+              </p>
+            </div>
+          </article>
+
+          <article class="card-jogo" tabindex="0" role="link" data-href="#">
+            <img src="viscera.jpg" alt="Viscera Cleanup Detail" class="imagem-jogo" />
+            <div class="detalhes-jogo">
+              <h3 class="nome-jogo">Viscera Cleanup Detail</h3>
+              <p class="preco-jogo">
+                <span class="desconto">-70%</span>
+                <span class="preco-original">R$ 59,00</span>
+                <span class="preco-final">R$ 17,00</span>
+              </p>
+            </div>
+          </article>
+
+          <!-- NOVOS CARDS - SEÇÃO DESCONTOS -->
+          <article class="card-jogo" tabindex="0" role="link" data-href="#" aria-label="The Elder Scrolls V: Skyrim - abrir página do jogo">
+            <img src="skyrim.jpg" alt="The Elder Scrolls V: Skyrim" class="imagem-jogo" />
+            <div class="detalhes-jogo">
+              <h3 class="nome-jogo">The Elder Scrolls V: Skyrim</h3>
+              <p class="preco-jogo">
+                <span class="desconto">-75%</span>
+                <span class="preco-original">R$ 99,90</span>
+                <span class="preco-final">R$ 24,97</span>
+              </p>
+            </div>
+          </article>
+
+          <article class="card-jogo" tabindex="0" role="link" data-href="#" aria-label="Red Dead Redemption 2 - abrir página do jogo">
+            <img src="rdr2.jpg" alt="Red Dead Redemption 2" class="imagem-jogo" />
+            <div class="detalhes-jogo">
+              <h3 class="nome-jogo">Red Dead Redemption 2</h3>
+              <p class="preco-jogo">
+                <span class="desconto">-50%</span>
+                <span class="preco-original">R$ 249,00</span>
+                <span class="preco-final">R$ 124,50</span>
+              </p>
+            </div>
+          </article>
+
+          <article class="card-jogo" tabindex="0" role="link" data-href="#" aria-label="Cyberpunk 2077 - abrir página do jogo">
+            <img src="cyberpunk.jpg" alt="Cyberpunk 2077" class="imagem-jogo" />
+            <div class="detalhes-jogo">
+              <h3 class="nome-jogo">Cyberpunk 2077</h3>
+              <p class="preco-jogo">
+                <span class="desconto">-33%</span>
+                <span class="preco-original">R$ 199,90</span>
+                <span class="preco-final">R$ 133,93</span>
+              </p>
+            </div>
+          </article>
+
+          <article class="card-jogo" tabindex="0" role="link" data-href="#" aria-label="Horizon Zero Dawn - abrir página do jogo">
+            <img src="horizon.jpg" alt="Horizon Zero Dawn" class="imagem-jogo" />
+            <div class="detalhes-jogo">
+              <h3 class="nome-jogo">Horizon Zero Dawn</h3>
+              <p class="preco-jogo">
+                <span class="desconto">-60%</span>
+                <span class="preco-original">R$ 179,90</span>
+                <span class="preco-final">R$ 71,96</span>
+              </p>
+            </div>
+          </article>
+
+          <article class="card-jogo" tabindex="0" role="link" data-href="#" aria-label="Resident Evil 4 Remake - abrir página do jogo">
+            <img src="re4.jpg" alt="Resident Evil 4 Remake" class="imagem-jogo" />
+            <div class="detalhes-jogo">
+              <h3 class="nome-jogo">Resident Evil 4 Remake</h3>
+              <p class="preco-jogo">
+                <span class="desconto">-45%</span>
+                <span class="preco-original">R$ 219,90</span>
+                <span class="preco-final">R$ 120,94</span>
+              </p>
+            </div>
+          </article>
+          <!-- FIM DOS NOVOS CARDS -->
+        </div>
+      </section>
+
+      <!-- Seção Categorias -->
+      <section class="secao-categorias" aria-labelledby="titulo-categorias">
+        <div class="cabecalho-secao">
+          <h2 id="titulo-categorias" class="titulo-secao">Explorar por Categoria</h2>
+        </div>
+        <div class="grid-categorias">
+          <a href="#" class="card-categoria" tabindex="0" role="link" data-href="#" aria-label="Categoria Casual">
+            <img src="casual.jpg" alt="Categoria de Jogos Casuais" class="imagem-categoria" />
+            <span class="nome-categoria">Casual</span>
+          </a>
+          <a href="#" class="card-categoria" tabindex="0" role="link" data-href="#" aria-label="Categoria Rogue-Like">
+            <img src="roguelike.jpg" alt="Categoria de Jogos Rogue-Like" class="imagem-categoria" />
+            <span class="nome-categoria">Rogue-Like</span>
+          </a>
+          <a href="#" class="card-categoria" tabindex="0" role="link" data-href="#" aria-label="Categoria Esportes">
+            <img src="esportes.jpg" alt="Categoria de Jogos de Esporte" class="imagem-categoria" />
+            <span class="nome-categoria">Esportes</span>
+          </a>
+          <!-- NOVAS CATEGORIAS -->
+          <a href="#" class="card-categoria" tabindex="0" role="link" data-href="#" aria-label="Categoria Estratégia">
+            <img src="estrategia.jpg" alt="Categoria de Jogos de Estratégia" class="imagem-categoria" />
+            <span class="nome-categoria">Estratégia</span>
+          </a>
+          <a href="#" class="card-categoria" tabindex="0" role="link" data-href="#" aria-label="Categoria Sandbox">
+            <img src="sandbox.jpg" alt="Categoria de Jogos Sandbox" class="imagem-categoria" />
+            <span class="nome-categoria">Sandbox</span>
+          </a>
+          <a href="#" class="card-categoria" tabindex="0" role="link" data-href="#" aria-label="Categoria RPG">
+            <img src="rpg.jpg" alt="Categoria de Jogos RPG" class="imagem-categoria" />
+            <span class="nome-categoria">RPG</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- Lista de Jogos -->
+      <section class="secao-lista" aria-labelledby="titulo-lista">
+        <div class="cabecalho-secao">
+          <h2 id="titulo-lista" class="titulo-secao">Novos e Notáveis</h2>
+        </div>
+        <div class="lista-jogos">
+          <!-- Cards Lista Existentes -->
+          <article class="card-lista-jogo" tabindex="0" role="link" data-href="#" aria-label="No, I'm not a Human - abrir página do jogo">
+            <img src="https://via.placeholder.com/231x107" alt="Capa do jogo: No, I'm not a Human" class="imagem-lista" />
+            <div class="detalhes-lista">
+              <h3 class="nome-lista">No, I'm not a Human</h3>
+              <p class="descricao-lista">Terror, Um Só Jogador, Escolhas Importantes, História Rica</p>
+              <span class="plataformas">Windows</span>
+            </div>
+            <div class="preco-lista">
+              <span class="desconto">-10%</span>
+              <div class="valores-preco">
+                <span class="preco-original">R$ 46,99</span>
+                <span class="preco-final">R$ 42,29</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card-lista-jogo" tabindex="0" role="link" data-href="#">
+            <img src="https://via.placeholder.com/231x107" alt="Capa do jogo: Greedland" class="imagem-lista" />
+            <div class="detalhes-lista">
+              <h3 class="nome-lista">Greedland</h3>
+              <p class="descricao-lista">Shoot 'em Up, Roguelite, Twin Stick Shooter, Bullet Hell</p>
+              <span class="plataformas">Windows</span>
+            </div>
+            <div class="preco-lista">
+              <span class="desconto">-36%</span>
+              <div class="valores-preco">
+                <span class="preco-original">R$ 44,61</span>
+                <span class="preco-final">R$ 28,54</span>
+              </div>
+            </div>
+          </article>
+          <!-- NOVOS 4 CARDS LISTA -->
+          <article class="card-lista-jogo" tabindex="0" role="link" data-href="#" aria-label="Deep Rock Galactic - abrir página do jogo">
+            <img src="https://via.placeholder.com/231x107/325a75/FFFFFF?text=DEEP+ROCK" alt="Capa do jogo: Deep Rock Galactic" class="imagem-lista" />
+            <div class="detalhes-lista">
+              <h3 class="nome-lista">Deep Rock Galactic</h3>
+              <p class="descricao-lista">FPS, Co-op, Exploração, Sobrevivência, Anões Espaciais</p>
+              <span class="plataformas">Windows, Iara Deck</span>
+            </div>
+            <div class="preco-lista">
+              <span class="desconto">-50%</span>
+              <div class="valores-preco">
+                <span class="preco-original">R$ 109,00</span>
+                <span class="preco-final">R$ 54,50</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card-lista-jogo" tabindex="0" role="link" data-href="#" aria-label="Elden Ring - abrir página do jogo">
+            <img src="https://via.placeholder.com/231x107/704170/FFFFFF?text=ELDEN+RING" alt="Capa do jogo: Elden Ring" class="imagem-lista" />
+            <div class="detalhes-lista">
+              <h3 class="nome-lista">Elden Ring</h3>
+              <p class="descricao-lista">Ação, RPG, Mundo Aberto, Fantasia Sombria, Dificuldade Elevada</p>
+              <span class="plataformas">Windows</span>
+            </div>
+            <div class="preco-lista">
+              <span class="desconto">Novo</span>
+              <div class="valores-preco">
+                <span class="preco-original"></span>
+                <span class="preco-final">R$ 299,90</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card-lista-jogo" tabindex="0" role="link" data-href="#" aria-label="Celeste - abrir página do jogo">
+            <img src="https://via.placeholder.com/231x107/ff7f50/FFFFFF?text=CELESTE" alt="Capa do jogo: Celeste" class="imagem-lista" />
+            <div class="detalhes-lista">
+              <h3 class="nome-lista">Celeste</h3>
+              <p class="descricao-lista">Plataforma, Pixel Art, Desafiador, Indie, Trilha Sonora Incrível</p>
+              <span class="plataformas">Windows, Mac, Iara Deck</span>
+            </div>
+            <div class="preco-lista">
+              <span class="desconto">-75%</span>
+              <div class="valores-preco">
+                <span class="preco-original">R$ 39,99</span>
+                <span class="preco-final">R$ 9,99</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card-lista-jogo" tabindex="0" role="link" data-href="#" aria-label="Stardew Valley - abrir página do jogo">
+            <img src="https://via.placeholder.com/231x107/4caf50/FFFFFF?text=STARDEW" alt="Capa do jogo: Stardew Valley" class="imagem-lista" />
+            <div class="detalhes-lista">
+              <h3 class="nome-lista">Stardew Valley</h3>
+              <p class="descricao-lista">Simulação, RPG, Gerenciamento, Relaxante, Pixel Art</p>
+              <span class="plataformas">Windows, Mac</span>
+            </div>
+            <div class="preco-lista">
+              <span class="desconto">-25%</span>
+              <div class="valores-preco">
+                <span class="preco-original">R$ 24,99</span>
+                <span class="preco-final">R$ 18,74</span>
+              </div>
+            </div>
+          </article>
+          <!-- FIM DOS NOVOS CARDS LISTA -->
+        </div>
+      </section>
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="rodape" aria-label="Rodapé do site">
+      <div class="conteudo-rodape">
+        <p class="texto-rodape">Quer recomendações?</p>
+        <div class="links-rodape">
+          <a href="#" aria-label="Entrar na sua conta Iara Games">Entrar</a>
+          <a href="#" aria-label="Criar conta gratuita no Iara Games">Ou cadastre-se e entre no Iara Games grátis</a>
+        </div>
+        <p class="texto-rodape">© 2024 Valve Corporation. Todos os direitos reservados.</p>
+      </div>
+    </footer>
+
+    <!-- --------------------------
+         Painel de Acessibilidade
+         -------------------------- -->
+    <div id="a11y-floating" class="a11y-floating" aria-hidden="true">
+      <div id="a11y-panel" class="a11y-panel" role="dialog" aria-modal="true" aria-label="Painel de Acessibilidade">
+        <div class="a11y-header">
+          <h3 class="a11y-title">Acessibilidade</h3>
+          <button id="a11y-close" class="a11y-close-btn" aria-label="Fechar painel de acessibilidade">X</button>
+        </div>
+
+        <div class="a11y-section">
+          <strong>Tamanho do Texto</strong>
+          <div class="a11y-controls">
+            <button class="a11y-btn text-size" data-size="normal">Texto Normal</button>
+            <button class="a11y-btn text-size" data-size="medio">Texto Médio</button>
+            <button class="a11y-btn text-size" data-size="grande">Texto Grande</button>
+          </div>
+        </div>
+
+        <div class="a11y-section">
+          <strong>Visual</strong>
+          <div class="a11y-controls">
+            <button class="a11y-btn visual" data-visual="claro">Visual Claro</button>
+            <button class="a11y-btn visual" data-visual="escuro">Visual Escuro</button>
+            <button class="a11y-btn visual" data-visual="alto-contraste">Alto Contraste</button>
+            <button class="a11y-btn visual" data-visual="monocromatico">Monocromático</button>
+          </div>
+        </div>
+
+        <div class="a11y-section">
+          <strong>Fonte</strong>
+          <div class="a11y-controls">
+            <button class="a11y-btn font-switch" data-font="inter">Inter</button>
+            <button class="a11y-btn font-switch" data-font="lexend">Lexend</button>
+            <button class="a11y-btn font-switch" data-font="baloo">Baloo</button>
+            <button class="a11y-btn font-switch" data-font="system">Padrão</button>
+          </div>
+        </div>
+
+        <div class="a11y-section">
+          <strong>Leitor de Tela</strong>
+          <div class="a11y-controls">
+            <button id="toggle-hover-reader" class="a11y-btn" aria-pressed="false">Leitura por Hover: Off</button>
+            <small class="a11y-note">Segure o mouse sobre um elemento por 1s</small>
+          </div>
+        </div>
+
+        <div class="a11y-section a11y-footer">
+          <button id="reset-a11y" class="a11y-btn">Restaurar Padrões</button>
+        </div>
+      </div>
+    </div>
+    <button id="a11y-toggle" class="a11y-main-btn" aria-expanded="false" aria-controls="a11y-panel" aria-label="Abrir opções de acessibilidade">♿</button>
+
+    <!-- Script externo -->
+    <script src="script.js"></script>
+  </body>
+</html>

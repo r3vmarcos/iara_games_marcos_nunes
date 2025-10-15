@@ -2,590 +2,719 @@
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-    <title>Jogo da Memória</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-      @import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Schoolbell&display=swap");
-
-      :root {
-        /* 🔹 Tamanhos */
-        --card-size-h: 23vh;
-        --card-size-w: calc(var(--card-size-h) / 1.39);
-        --logo-w: 12vw;
-        --logo-h: auto;
-
-        /* 🔹 Cores principais */
-        --color-red-bg: #c9362d;
-        --color-green-bg: #a8bd47;
-        --color-red-apple: #c41710;
-
-        --color-book-red: #c4362d;
-        --color-book-green: #a9bc39;
-        --color-book-page: #f3d6af;
-
-        --color-fiap-red: #f90667;
-        --color-fiap-green: #37c8b7;
-        --color-fiap-greencian: #29f4d5;
-        --color-fiap-yellow: #fff52a;
-
-        /* 🔹 Timer */
-        --timer-arc-bg: #00000000;
-        --timer-center-bg: #ffffff00;
-        --timer-color-text: #000000;
-
-        /* 🔹 Timer estados */
-        --timer-default: #10b981;
-        --timer-warning: #f8cb15;
-        --timer-alert: #ef4444;
-
-        /* 🔹 Transição */
-        --transition-speed: 2s;
-      }
-
-      body {
-        font-family: "Schoolbell", sans-serif;
-        user-select: none; /* Desativa a seleção de texto */
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        touch-action: manipulation; /* Desativa pinça de zoom */
-      }
-
-      /* Cartas */
-      .card-inner {
-        transform-style: preserve-3d;
-        transition: transform 0.6s;
-        position: relative;
-      }
-      .card.flipped .card-inner {
-        transform: rotateY(180deg);
-      }
-      .card-front,
-      .card-back {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        -webkit-backface-visibility: hidden;
-        backface-visibility: hidden;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      .card-front {
-        background-image: url("assets/verso.png");
-        background-size: cover;
-        background-position: center;
-      }
-      .card-back {
-        transform: rotateY(180deg);
-      }
-      .card {
-        width: var(--card-size-w);
-        height: var(--card-size-h);
-      }
-      #game-logo img {
-        width: var(--logo-w);
-        height: var(--logo-h);
-      }
-      .timer-circle {
-        transform: rotate(-90deg);
-      }
-      .timer-path-remaining {
-        stroke-linecap: round;
-      }
-
-      /* 🔹 Transição Fade + Zoom */
-      .page-transition {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%) scale(0.95);
-        opacity: 0;
-        width: 70%;
-        height: 60%;
-        transition: opacity 0.8s ease, transform 0.8s ease;
-        pointer-events: none;
-      }
-
-      .page-transition.active {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(1);
-        pointer-events: auto;
-        z-index: 20;
-      }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Iara Games</title>
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/styles.css" />
+    <!-- Adicionado: Font Awesome CDN para ícones de seta no carrossel -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
   </head>
-  <body class="h-screen w-screen flex items-center justify-center overflow-hidden">
-    <img src="/assets/background2.png" alt="Imagem de fundo" class="z-0 absolute inset-0 h-full w-full bg-contain" />
 
-    <!-- 🔹 Container -->
-    <div id="screens-container" class="relative w-full h-full flex items-center justify-center">
-      <!-- Tela Inicial -->
-      <div
-        id="start-screen"
-        class="w-[70%] h-[65%] page-transition active bg-purple-600/70 border-4 border-slate-900 rounded-[70px] drop-shadow-2xl flex flex-col items-center justify-center gap-6"
-      >
-        <img src="assets/logo.png" alt="Logo FIAP School" class="h-28 w-auto mb-4" />
-        <p class="tracking-wider text-4xl text-center text-gray-900 mb-4">Ajude A <strong class="text-4xl">FAMÍLIA GORGONZOLA </strong> encontrar os seus pares no...</p>
-        <h1 class="text-6xl font-bold text-gray-900 mb-4">Jogo da Memória</h1>
-        <button
-          id="start-button"
-          class="bg-yellow-500/70 border-2 border-gray-900 text-black font-bold tracking-[3px] mt-10 py-4 px-10 rounded-[30px] text-3xl hover:bg-green-400 hover:text-black transition-all duration-300 transform hover:scale-105"
-        >
-          VAMOS JOGAR!
-        </button>
-      </div>
-
-      <!-- Tela Final -->
-      <div
-        id="final-screen"
-        class="w-[70%] h-[65%] page-transition bg-yellow-300 border-4 border-slate-900 rounded-[70px] drop-shadow-2xl flex flex-col items-center justify-center gap-6"
-      >
-        <img src="assets/logo.png" alt="Logo FIAP School" class="h-28 w-auto mb-4" />
-        <p class="tracking-wider text-4xl text-center text-gray-900 mb-4"><strong>Muito Obrigado pela ajuda...</strong></p>
-        <h1 id="final-message" class="text-5xl font-bold text-gray-900 mb-4"></h1>
-      </div>
-
-      <!-- Tela do Jogo -->
-      <div id="game-wrapper" class="page-transition w-full h-full flex">
-        <img src="assets/background2.png" class="z-10 absolute inset-0 h-full w-full bg-contain" alt="background" />
-
-        <div id="itens-esquerda" class="h-screen flex-1 flex flex-col items-center justify-center">
-          <div id="game-logo" class="z-20 h-[30%] w-full flex items-end justify-center">
-            <img src="assets/logo.png" alt="Logo do Jogo" />
-          </div>
-          <div id="game-space-l2" class="h-[40%] w-full flex items-center justify-center"></div>
-          <div id="game-pares" class="z-20 h-[30%] w-full flex flex-col items-center justify-start font-bold">
-            <span class="uppercase text-stone-900 text-6xl">PARES</span>
-            <span class="uppercase text-stone-900 text-2xl">ENCONTRADOS:</span>
-            <span id="pares-count" class="text-8xl text-stone-900 mt-2">0</span>
-          </div>
+  <body class="modo-escuro">
+    <!-- Cabeçalho -->
+    <header class="cabecalho">
+      <div class="conteudo-cabecalho">
+        <h1>
+          <a href="#" class="logo"><img src="assets/logo.png" alt="Iara Games Logo" />Iara Games</a>
+        </h1>
+        <nav aria-label="Menu principal">
+          <ul class="menu-navegacao">
+            <li><a href="#">Loja</a></li>
+            <li><a href="#">biblioteca</a></li>
+            <li><a href="#">Fórum</a></li>
+            <li><a href="#">Suporte</a></li>
+            <li><a href="#">Meu Perfil</a></li>
+          </ul>
+        </nav>
+        <div class="acoes-usuario">
+          <button class="botao-instalar" aria-label="Instalar o aplicativo Iara-Games">Instalar Iara-Games</button>
+          <button class="botao-acao login-btn" aria-label="Fazer login na sua conta Iara Games">Logar</button>
+          <a href="pages/cadastro.html" class="botao-acao" aria-label="Cadastrar nova conta Iara Games">Cadastre-se</a>
         </div>
+      </div>
+    </header>
 
-        <div id="game-container" class="w-fit h-screen p-8 flex items-center justify-center">
-          <div id="game-grid" class="z-20 grid grid-cols-6 gap-2"></div>
+    <!-- Subnavegação -->
+    <nav class="sub-navegacao" aria-label="Menu secundário">
+      <div class="conteudo-subnavegacao">
+        <ul class="menu-subnavegacao">
+          <li><a href="#">Minha Lista</a></li>
+          <li><a href="#">Categorias</a></li>
+          <li><a href="#">Novidades</a></li>
+          <li><a href="#">Top 5 da IARA</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Conteúdo Principal -->
+    <main class="conteudo-principal">
+      <!-- Banner do Festival -->
+      <section class="banner-festival" aria-labelledby="titulo-festival">
+        <img src="assets/page/banner_festival.png" alt="Banner do Festival Iara Games de Verão" class="imagem-banner-fundo" />
+        <div class="conteudo-festival">
+          <h2 id="titulo-festival" class="logo-festival">Iara Games de Verão</h2>
+          <p class="datas-festival">22 de Setembro</p>
+          <p class="descricao-festival">Descontos, Demos e Muito Mais</p>
         </div>
+      </section>
 
-        <div id="itens-direita" class="h-screen flex-1 flex flex-col items-center justify-center">
-          <div id="game-space-r1" class="h-[30%] z-20 w-full flex items-center justify-center"></div>
+      <!-- Seção em Destaque -->
+      <section class="secao-destaque" aria-labelledby="titulo-destaques">
+        <aside class="barra-lateral" aria-label="Navegação lateral de recomendações">
+          <h2 id="titulo-destaques">Marcadores</h2>
+          <a href="#" class="item-barra">Recomendados</a>
+          <a href="#" class="item-barra">Lançamentos</a>
+          <a href="#" class="item-barra">5 Estrelas</a>
+          <a href="#" class="item-barra">Por Amigos</a>
+          <a href="#" class="item-barra">Por Curadores</a>
+          <a href="#" class="item-barra">Mais Vendidos</a>
+          <a href="#" class="item-barra">Populares</a>
+          <a href="#" class="item-barra">Melhor Avaliação</a>
+          <a href="#" class="item-barra">Queridos dos Influêncers</a>
+          <a href="#" class="item-barra">Tags</a>
+          <a href="#" class="item-barra">Iara Deck</a>
+        </aside>
 
-          <div id="game-time" class="h-[40%] z-20 w-full flex items-center justify-center">
-            <div class="relative w-40 h-40">
-              <svg class="w-full h-full timer-circle" viewBox="0 0 100 100">
-                <circle id="timer-bg" stroke-width="8" fill="transparent" r="45" cx="50" cy="50" stroke="var(--timer-arc-bg)" />
-                <path
-                  id="timer-path-remaining"
-                  stroke-width="8"
-                  fill="transparent"
-                  d="M 50, 50
-                  m -45, 0
-                  a 45,45 0 1,0 90,0
-                  a 45,45 0 1,0 -90,0"
-                ></path>
-                <circle id="timer-center" r="35" cx="50" cy="50" fill="var(--timer-center-bg)"></circle>
-              </svg>
-              <span id="time-left" class="absolute inset-0 flex items-center justify-center text-5xl font-bold text-stone-900"></span>
+        <div class="principal-destaque">
+          <!--CARROSSEL JS DRIVEN -->
+          <div class="carousel-container carousel-large" id="carousel-main">
+            <div class="carousel-wrapper">
+              <div class="carousel-track">
+                <!-- SLIDE 1 -->
+                <div class="carousel-item">
+                  <img src="assets/carrossel/carrossel_slide_1.png" alt="Hollow Knight: Silksong" class="carousel-image" />
+                  <div class="carousel-overlay">
+                    <div class="carousel-title">Hollow Knight: Silksong</div>
+                    <div class="carousel-pricing">
+                      <span class="carousel-discount">-20%</span>
+                      <div class="carousel-prices">
+                        <span class="carousel-original">R$ 74,00</span>
+                        <span class="carousel-final">R$ 59,19</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- SLIDE 2 -->
+                <div class="carousel-item">
+                  <img src="assets/carrossel/carrossel_slide_2.png" alt="Metal Gear Solid 3: Snake Eater" class="carousel-image" />
+                  <div class="carousel-overlay">
+                    <div class="carousel-title">Metal Gear Solid 3: Snake Eater</div>
+                    <div class="carousel-pricing">
+                      <span class="carousel-discount">NOVO</span>
+                      <div class="carousel-prices">
+                        <span class="carousel-original">R$ 349,90</span>
+                        <span class="carousel-final">R$ 349,90</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- SLIDE 3 -->
+                <div class="carousel-item">
+                  <img src="assets/carrossel/carrossel_slide_3.png" alt="Marvel Rivals" class="carousel-image" />
+                  <div class="carousel-overlay">
+                    <div class="carousel-title">Marvel Rivals</div>
+                    <div class="carousel-pricing">
+                      <span class="carousel-discount">GRÁTIS</span>
+                      <div class="carousel-prices">
+                        <span class="carousel-original"></span>
+                        <span class="carousel-final">Grátis</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <span id="end-message" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl font-bold text-gray-900"></span>
+            <!-- Controles de navegação para JS -->
+            <button class="carousel-nav prev" data-nav="-1" aria-label="Slide anterior">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="carousel-nav next" data-nav="1" aria-label="Próximo slide">
+              <i class="fas fa-chevron-right"></i>
+            </button>
+            <!-- Pontos de navegação para JS -->
+            <div class="carousel-dots" id="dots-carousel-main" aria-label="Navegação por pontos"></div>
           </div>
+        </div>
+      </section>
 
-          <div id="game-space-r3" class="h-[30%] w-full flex items-center justify-center"></div>
+      <!-- Seção Iara Games Deck -->
+      <section class="secao-deck" aria-labelledby="titulo-deck">
+        <img src="assets/page/iara_deck_nobg.png" alt="Imagem do console portátil Iara Deck" class="imagem-deck" />
+        <div class="conteudo-deck">
+          <h2 id="titulo-deck">Jogue no Iara Deck.</h2>
+          <p>Curta sua biblioteca Iara Games em qualquer lugar com o portátil gamer.</p>
+        </div>
+      </section>
+
+      <!-- Seção de Descontos -->
+      <section class="secao-descontos" aria-labelledby="titulo-promocoes">
+        <div class="cabecalho-secao">
+          <h2 id="titulo-promocoes" class="titulo-secao">Promoções e Eventos</h2>
+          <a href="#" class="mais-jogos">Ver Mais</a>
+        </div>
+        <div class="grid-jogos">
+          <!-- 12 CARDS DE JOGO (PROMOÇÕES) -->
+          <article class="card-jogo" tabindex="0" role="link" data-href="#" aria-label="Baldur’s Gate 3 - abrir página do jogo">
+            <img src="assets/games/baldurs_gate_3/baldurs_gate_3_header.jpg" alt="Baldur’s Gate 3" class="imagem-jogo" />
+            <div class="detalhes-jogo">
+              <h3 class="nome-jogo">Baldur’s Gate 3</h3>
+              <p class="preco-jogo">
+                <span class="desconto">-15%</span>
+                <span class="preco-original">R$ 199,90</span>
+                <span class="preco-final">R$ 169,91</span>
+              </p>
+            </div>
+          </article>
+
+          <article class="card-jogo" tabindex="0" role="link" data-href="#" aria-label="Cities: Skylines - abrir página do jogo">
+            <img src="assets/games/cities_skylines/cities_skylines_header.jpg" alt="Cities: Skylines" class="imagem-jogo" />
+            <div class="detalhes-jogo">
+              <h3 class="nome-jogo">Cities: Skylines</h3>
+              <p class="preco-jogo">
+                <span class="desconto">-70%</span>
+                <span class="preco-original">R$ 55,90</span>
+                <span class="preco-final">R$ 16,77</span>
+              </p>
+            </div>
+          </article>
+
+          <article class="card-jogo" tabindex="0" role="link" data-href="#" aria-label="Forza Horizon 5 - abrir página do jogo">
+            <img src="assets/games/forza_horizon_5/forza_horizon_5_header.jpg" alt="Forza Horizon 5" class="imagem-jogo" />
+            <div class="detalhes-jogo">
+              <h3 class="nome-jogo">Forza Horizon 5</h3>
+              <p class="preco-jogo">
+                <span class="desconto">-40%</span>
+                <span class="preco-original">R$ 249,00</span>
+                <span class="preco-final">R$ 149,40</span>
+              </p>
+            </div>
+          </article>
+
+          <article class="card-jogo" tabindex="0" role="link" data-href="#" aria-label="God of War - abrir página do jogo">
+            <img src="assets/games/god_of_war/god_of_war_header.jpg" alt="God of War" class="imagem-jogo" />
+            <div class="detalhes-jogo">
+              <h3 class="nome-jogo">God of War</h3>
+              <p class="preco-jogo">
+                <span class="desconto">-50%</span>
+                <span class="preco-original">R$ 199,90</span>
+                <span class="preco-final">R$ 99,95</span>
+              </p>
+            </div>
+          </article>
+
+          <article class="card-jogo" tabindex="0" role="link" data-href="#" aria-label="Grand Theft Auto V (ou GTA V) - abrir página do jogo">
+            <img src="assets/games/grand_theft_auto_v/grand_theft_auto_v_header.jpg" alt="Grand Theft Auto V (ou GTA V)" class="imagem-jogo" />
+            <div class="detalhes-jogo">
+              <h3 class="nome-jogo">Grand Theft Auto V (ou GTA V)</h3>
+              <p class="preco-jogo">
+                <span class="desconto">-63%</span>
+                <span class="preco-original">R$ 99,90</span>
+                <span class="preco-final">R$ 36,96</span>
+              </p>
+            </div>
+          </article>
+
+          <article class="card-jogo" tabindex="0" role="link" data-href="#" aria-label="Microsoft Flight Simulator - abrir página do jogo">
+            <img src="assets/games/microsoft_flight_simulator/microsoft_flight_simulator_header.jpg" alt="Microsoft Flight Simulator" class="imagem-jogo" />
+            <div class="detalhes-jogo">
+              <h3 class="nome-jogo">Microsoft Flight Simulator</h3>
+              <p class="preco-jogo">
+                <span class="desconto">-60%</span>
+                <span class="preco-original">R$ 299,00</span>
+                <span class="preco-final">R$ 119,60</span>
+              </p>
+            </div>
+          </article>
+
+          <article class="card-jogo" tabindex="0" role="link" data-href="#" aria-label="Rocket League - abrir página do jogo">
+            <img src="assets/games/rocket_league/rocket_league_header.jpg" alt="Rocket League" class="imagem-jogo" />
+            <div class="detalhes-jogo">
+              <h3 class="nome-jogo">Rocket League</h3>
+              <p class="preco-jogo">
+                <span class="desconto">GRÁTIS</span>
+                <span class="preco-original"></span>
+                <span class="preco-final">Grátis</span>
+              </p>
+            </div>
+          </article>
+
+          <article class="card-jogo" tabindex="0" role="link" data-href="#" aria-label="Stardew Valley - abrir página do jogo">
+            <img src="assets/games/stardew_valley/stardew_valley_header.jpg" alt="Stardew Valley" class="imagem-jogo" />
+            <div class="detalhes-jogo">
+              <h3 class="nome-jogo">Stardew Valley</h3>
+              <p class="preco-jogo">
+                <span class="desconto">-25%</span>
+                <span class="preco-original">R$ 24,99</span>
+                <span class="preco-final">R$ 18,74</span>
+              </p>
+            </div>
+          </article>
+
+          <article class="card-jogo" tabindex="0" role="link" data-href="#" aria-label="Street Fighter 6 - abrir página do jogo">
+            <img src="assets/games/street_fighter_6/street_fighter_6_header.jpg" alt="Street Fighter 6" class="imagem-jogo" />
+            <div class="detalhes-jogo">
+              <h3 class="nome-jogo">Street Fighter 6</h3>
+              <p class="preco-jogo">
+                <span class="desconto">-34%</span>
+                <span class="preco-original">R$ 279,00</span>
+                <span class="preco-final">R$ 184,14</span>
+              </p>
+            </div>
+          </article>
+
+          <article class="card-jogo" tabindex="0" role="link" data-href="#" aria-label="The Elder Scrolls V: Skyrim Special Edition - abrir página do jogo">
+            <img src="assets/games/the_elder_scrolls_v_skyrim_special_edition/the_elder_scrolls_v_skyrim_special_edition_header.jpg" alt="The Elder Scrolls V: Skyrim Special Edition" class="imagem-jogo" />
+            <div class="detalhes-jogo">
+              <h3 class="nome-jogo">The Elder Scrolls V: Skyrim SE</h3>
+              <p class="preco-jogo">
+                <span class="desconto">-80%</span>
+                <span class="preco-original">R$ 119,99</span>
+                <span class="preco-final">R$ 23,99</span>
+              </p>
+            </div>
+          </article>
+
+          <article class="card-jogo" tabindex="0" role="link" data-href="#" aria-label="The Sims 4 - abrir página do jogo">
+            <img src="assets/games/the_sims_4/the_sims_4_header.jpg" alt="The Sims 4" class="imagem-jogo" />
+            <div class="detalhes-jogo">
+              <h3 class="nome-jogo">The Sims 4</h3>
+              <p class="preco-jogo">
+                <span class="desconto">GRÁTIS</span>
+                <span class="preco-original"></span>
+                <span class="preco-final">Grátis</span>
+              </p>
+            </div>
+          </article>
+
+          <article class="card-jogo" tabindex="0" role="link" data-href="#" aria-label="The Witcher 3: Wild Hunt - abrir página do jogo">
+            <img src="assets/games/the_witcher_3_wild_hunt/the_witcher_3_wild_hunt_header.jpg" alt="The Witcher 3: Wild Hunt" class="imagem-jogo" />
+            <div class="detalhes-jogo">
+              <h3 class="nome-jogo">The Witcher 3: Wild Hunt</h3>
+              <p class="preco-jogo">
+                <span class="desconto">-80%</span>
+                <span class="preco-original">R$ 149,90</span>
+                <span class="preco-final">R$ 29,98</span>
+              </p>
+            </div>
+          </article>
+          <!-- FIM DOS CARDS DE PROMOÇÃO -->
+        </div>
+      </section>
+
+      <!-- Seção Categorias -->
+      <section class="secao-categorias" aria-labelledby="titulo-categorias">
+        <div class="cabecalho-secao">
+          <h2 id="titulo-categorias" class="titulo-secao">Explorar por Categoria</h2>
+        </div>
+        <div class="grid-categorias">
+          <!-- CATEGORIAS -->
+          <a href="#" class="card-categoria" tabindex="0" role="link" data-href="#" aria-label="Categoria Tiro">
+            <img src="assets/categorias/cat_tiro.png" alt="Categoria de Jogos de Tiro" class="imagem-categoria" />
+            <span class="nome-categoria">Tiro</span>
+          </a>
+          <a href="#" class="card-categoria" tabindex="0" role="link" data-href="#" aria-label="Categoria Simulação">
+            <img src="assets/categorias/cat_simulacao.png" alt="Categoria de Jogos de Simulação" class="imagem-categoria" />
+            <span class="nome-categoria">Simulação</span>
+          </a>
+          <a href="#" class="card-categoria" tabindex="0" role="link" data-href="#" aria-label="Categoria Esportes">
+            <img src="assets/categorias/cat_esportes.png" alt="Categoria de Jogos de Esporte" class="imagem-categoria" />
+            <span class="nome-categoria">Esportes</span>
+          </a>
+          <a href="#" class="card-categoria" tabindex="0" role="link" data-href="#" aria-label="Categoria Estratégia">
+            <img src="assets/categorias/cat_estrategia.png" alt="Categoria de Jogos de Estratégia" class="imagem-categoria" />
+            <span class="nome-categoria">Estratégia</span>
+          </a>
+          <a href="#" class="card-categoria" tabindex="0" role="link" data-href="#" aria-label="Categoria Corrida">
+            <img src="assets/categorias/cat_corrida.png" alt="Categoria de Jogos de Corrida" class="imagem-categoria" />
+            <span class="nome-categoria">Corrida</span>
+          </a>
+          <a href="#" class="card-categoria" tabindex="0" role="link" data-href="#" aria-label="Categoria Multiplayer">
+            <img src="assets/categorias/cat_multiplayer.png" alt="Categoria de Jogos Multiplayer" class="imagem-categoria" />
+            <span class="nome-categoria">Multiplayer</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- Lista de Jogos -->
+      <section class="secao-lista" aria-labelledby="titulo-lista">
+        <div class="cabecalho-secao">
+          <h2 id="titulo-lista" class="titulo-secao">Novos e Notáveis</h2>
+        </div>
+        <div class="lista-jogos">
+          <!-- 18 CARDS DE LISTA -->
+          <article class="card-lista-jogo" tabindex="0" role="link" data-href="#" aria-label="Call Of Duty: Modern Warfare II - abrir página do jogo">
+            <img src="assets/games/call_of_duty_modern_warfare_ii/call_of_duty_modern_warfare_ii_capsule.jpg" alt="Capa do jogo: Call Of Duty: Modern Warfare II" class="imagem-lista" />
+            <div class="detalhes-lista">
+              <h3 class="nome-lista">Call Of Duty: Modern Warfare II</h3>
+              <p class="descricao-lista">FPS, Guerra, Tático, Ação, Multijogador</p>
+              <span class="plataformas">Windows</span>
+            </div>
+            <div class="preco-lista">
+              <span class="desconto">-50%</span>
+              <div class="valores-preco">
+                <span class="preco-original">R$ 299,00</span>
+                <span class="preco-final">R$ 149,50</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card-lista-jogo" tabindex="0" role="link" data-href="#" aria-label="Cuphead - abrir página do jogo">
+            <img src="assets/games/cuphead/cuphead_capsule.jpg" alt="Capa do jogo: Cuphead" class="imagem-lista" />
+            <div class="detalhes-lista">
+              <h3 class="nome-lista">Cuphead</h3>
+              <p class="descricao-lista">Plataforma, Boss Rush, Indie, Arte 2D, Clássico</p>
+              <span class="plataformas">Windows, Mac</span>
+            </div>
+            <div class="preco-lista">
+              <span class="desconto">-25%</span>
+              <div class="valores-preco">
+                <span class="preco-original">R$ 39,99</span>
+                <span class="preco-final">R$ 29,99</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card-lista-jogo" tabindex="0" role="link" data-href="#" aria-label="Elden Ring - abrir página do jogo">
+            <img src="assets/games/elden_ring/elden_ring_capsule.jpg" alt="Capa do jogo: Elden Ring" class="imagem-lista" />
+            <div class="detalhes-lista">
+              <h3 class="nome-lista">Elden Ring</h3>
+              <p class="descricao-lista">RPG de Ação, Mundo Aberto, Fantasia Sombria, Souls-like</p>
+              <span class="plataformas">Windows</span>
+            </div>
+            <div class="preco-lista">
+              <span class="desconto">-30%</span>
+              <div class="valores-preco">
+                <span class="preco-original">R$ 249,00</span>
+                <span class="preco-final">R$ 174,30</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card-lista-jogo" tabindex="0" role="link" data-href="#" aria-label="Euro Truck Simulator 2 - abrir página do jogo">
+            <img src="assets/games/euro_truck_simulator_2/euro_truck_simulator_2_capsule.jpg" alt="Capa do jogo: Euro Truck Simulator 2" class="imagem-lista" />
+            <div class="detalhes-lista">
+              <h3 class="nome-lista">Euro Truck Simulator 2</h3>
+              <p class="descricao-lista">Simulação, Condução, Relaxante, Mundo Aberto</p>
+              <span class="plataformas">Windows, Mac, Linux</span>
+            </div>
+            <div class="preco-lista">
+              <span class="desconto">-75%</span>
+              <div class="valores-preco">
+                <span class="preco-original">R$ 39,99</span>
+                <span class="preco-final">R$ 9,99</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card-lista-jogo" tabindex="0" role="link" data-href="#" aria-label="Fallout 76 - abrir página do jogo">
+            <img src="assets/games/fallout_76/fallout_76_capsule.jpg" alt="Capa do jogo: Fallout 76" class="imagem-lista" />
+            <div class="detalhes-lista">
+              <h3 class="nome-lista">Fallout 76</h3>
+              <p class="descricao-lista">RPG, Ação, Multijogador, Pós-apocalíptico</p>
+              <span class="plataformas">Windows</span>
+            </div>
+            <div class="preco-lista">
+              <span class="desconto">-60%</span>
+              <div class="valores-preco">
+                <span class="preco-original">R$ 79,90</span>
+                <span class="preco-final">R$ 31,96</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card-lista-jogo" tabindex="0" role="link" data-href="#" aria-label="For Honor - abrir página do jogo">
+            <img src="assets/games/for_honor/for_honor_capsule.jpg" alt="Capa do jogo: For Honor" class="imagem-lista" />
+            <div class="detalhes-lista">
+              <h3 class="nome-lista">For Honor</h3>
+              <p class="descricao-lista">Ação, Luta, Medieval, Multijogador, Tático</p>
+              <span class="plataformas">Windows</span>
+            </div>
+            <div class="preco-lista">
+              <span class="desconto">-75%</span>
+              <div class="valores-preco">
+                <span class="preco-original">R$ 89,90</span>
+                <span class="preco-final">R$ 22,47</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card-lista-jogo" tabindex="0" role="link" data-href="#" aria-label="Horizon Zero Dawn Complete Edition - abrir página do jogo">
+            <img src="assets/games/horizon_zero_dawn_complete_edition/horizon_zero_dawn_complete_edition_capsule.jpg" alt="Capa do jogo: Horizon Zero Dawn Complete Edition" class="imagem-lista" />
+            <div class="detalhes-lista">
+              <h3 class="nome-lista">Horizon Zero Dawn CE</h3>
+              <p class="descricao-lista">Ação, RPG, Mundo Aberto, Ficção Científica</p>
+              <span class="plataformas">Windows</span>
+            </div>
+            <div class="preco-lista">
+              <span class="desconto">-75%</span>
+              <div class="valores-preco">
+                <span class="preco-original">R$ 199,90</span>
+                <span class="preco-final">R$ 49,97</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card-lista-jogo" tabindex="0" role="link" data-href="#" aria-label="Kingdom Come: Deliverance - abrir página do jogo">
+            <img src="assets/games/kingdom_come_deliverance/kingdom_come_deliverance_capsule.jpg" alt="Capa do jogo: Kingdom Come: Deliverance" class="imagem-lista" />
+            <div class="detalhes-lista">
+              <h3 class="nome-lista">Kingdom Come: Deliverance</h3>
+              <p class="descricao-lista">RPG, Simulação, Medieval, História, Realismo</p>
+              <span class="plataformas">Windows</span>
+            </div>
+            <div class="preco-lista">
+              <span class="desconto">-70%</span>
+              <div class="valores-preco">
+                <span class="preco-original">R$ 149,00</span>
+                <span class="preco-final">R$ 44,70</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card-lista-jogo" tabindex="0" role="link" data-href="#" aria-label="Lost Ark - abrir página do jogo">
+            <img src="assets/games/lost_ark/lost_ark_capsule.jpg" alt="Capa do jogo: Lost Ark" class="imagem-lista" />
+            <div class="detalhes-lista">
+              <h3 class="nome-lista">Lost Ark</h3>
+              <p class="descricao-lista">MMORPG, Ação, Fantasia, Free-to-Play</p>
+              <span class="plataformas">Windows</span>
+            </div>
+            <div class="preco-lista">
+              <span class="desconto">GRÁTIS</span>
+              <div class="valores-preco">
+                <span class="preco-original"></span>
+                <span class="preco-final">Grátis</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card-lista-jogo" tabindex="0" role="link" data-href="#" aria-label="NBA 2K23 - abrir página do jogo">
+            <img src="assets/games/nba_2k23/nba_2k23_capsule.jpg" alt="Capa do jogo: NBA 2K23" class="imagem-lista" />
+            <div class="detalhes-lista">
+              <h3 class="nome-lista">NBA 2K23</h3>
+              <p class="descricao-lista">Esportes, Simulação, Basquete, Multijogador</p>
+              <span class="plataformas">Windows</span>
+            </div>
+            <div class="preco-lista">
+              <span class="desconto">-90%</span>
+              <div class="valores-preco">
+                <span class="preco-original">R$ 299,00</span>
+                <span class="preco-final">R$ 29,90</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card-lista-jogo" tabindex="0" role="link" data-href="#" aria-label="New World - abrir página do jogo">
+            <img src="assets/games/new_world/new_world_capsule.jpg" alt="Capa do jogo: New World" class="imagem-lista" />
+            <div class="detalhes-lista">
+              <h3 class="nome-lista">New World</h3>
+              <p class="descricao-lista">MMORPG, Aventura, Fantasia, Sandbox, Colonial</p>
+              <span class="plataformas">Windows</span>
+            </div>
+            <div class="preco-lista">
+              <span class="desconto">-60%</span>
+              <div class="valores-preco">
+                <span class="preco-original">R$ 79,90</span>
+                <span class="preco-final">R$ 31,96</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card-lista-jogo" tabindex="0" role="link" data-href="#" aria-label="Planet Coaster - abrir página do jogo">
+            <img src="assets/games/planet_coaster/planet_coaster_capsule.jpg" alt="Capa do jogo: Planet Coaster" class="imagem-lista" />
+            <div class="detalhes-lista">
+              <h3 class="nome-lista">Planet Coaster</h3>
+              <p class="descricao-lista">Simulação, Gerenciamento, Construção, Parques</p>
+              <span class="plataformas">Windows</span>
+            </div>
+            <div class="preco-lista">
+              <span class="desconto">-75%</span>
+              <div class="valores-preco">
+                <span class="preco-original">R$ 109,99</span>
+                <span class="preco-final">R$ 27,49</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card-lista-jogo" tabindex="0" role="link" data-href="#" aria-label="Rust - abrir página do jogo">
+            <img src="assets/games/rust/rust_capsule.jpg" alt="Capa do jogo: Rust" class="imagem-lista" />
+            <div class="detalhes-lista">
+              <h3 class="nome-lista">Rust</h3>
+              <p class="descricao-lista">Sobrevivência, Multijogador, Mundo Aberto, Sandbox</p>
+              <span class="plataformas">Windows</span>
+            </div>
+            <div class="preco-lista">
+              <span class="desconto">-33%</span>
+              <div class="valores-preco">
+                <span class="preco-original">R$ 129,00</span>
+                <span class="preco-final">R$ 86,43</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card-lista-jogo" tabindex="0" role="link" data-href="#" aria-label="Starfield - abrir página do jogo">
+            <img src="assets/games/starfield/starfield_capsule.jpg" alt="Capa do jogo: Starfield" class="imagem-lista" />
+            <div class="detalhes-lista">
+              <h3 class="nome-lista">Starfield</h3>
+              <p class="descricao-lista">RPG, Ficção Científica, Exploração Espacial, Bethesda</p>
+              <span class="plataformas">Windows</span>
+            </div>
+            <div class="preco-lista">
+              <span class="desconto">-20%</span>
+              <div class="valores-preco">
+                <span class="preco-original">R$ 299,00</span>
+                <span class="preco-final">R$ 239,20</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card-lista-jogo" tabindex="0" role="link" data-href="#" aria-label="Tekken 8 - abrir página do jogo">
+            <img src="assets/games/tekken_8/tekken_8_capsule.jpg" alt="Capa do jogo: Tekken 8" class="imagem-lista" />
+            <div class="detalhes-lista">
+              <h3 class="nome-lista">Tekken 8</h3>
+              <p class="descricao-lista">Luta, Ação, 3D, Multijogador, E-sports</p>
+              <span class="plataformas">Windows</span>
+            </div>
+            <div class="preco-lista">
+              <span class="desconto">NOVO</span>
+              <div class="valores-preco">
+                <span class="preco-original"></span>
+                <span class="preco-final">R$ 349,90</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card-lista-jogo" tabindex="0" role="link" data-href="#" aria-label="Terraria - abrir página do jogo">
+            <img src="assets/games/terraria/terraria_capsule.jpg" alt="Capa do jogo: Terraria" class="imagem-lista" />
+            <div class="detalhes-lista">
+              <h3 class="nome-lista">Terraria</h3>
+              <p class="descricao-lista">Sandbox, 2D, Exploração, Sobrevivência, Aventura</p>
+              <span class="plataformas">Windows, Mac, Linux</span>
+            </div>
+            <div class="preco-lista">
+              <span class="desconto">-50%</span>
+              <div class="valores-preco">
+                <span class="preco-original">R$ 36,99</span>
+                <span class="preco-final">R$ 18,49</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card-lista-jogo" tabindex="0" role="link" data-href="#" aria-label="The Elder Scrolls Online - abrir página do jogo">
+            <img src="assets/games/the_elder_scrolls_online/the_elder_scrolls_online_capsule.jpg" alt="Capa do jogo: The Elder Scrolls Online" class="imagem-lista" />
+            <div class="detalhes-lista">
+              <h3 class="nome-lista">The Elder Scrolls Online</h3>
+              <p class="descricao-lista">MMORPG, Fantasia, Mundo Aberto, História</p>
+              <span class="plataformas">Windows, Mac</span>
+            </div>
+            <div class="preco-lista">
+              <span class="desconto">-70%</span>
+              <div class="valores-preco">
+                <span class="preco-original">R$ 69,00</span>
+                <span class="preco-final">R$ 20,70</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card-lista-jogo" tabindex="0" role="link" data-href="#" aria-label="Train Simulator Classic - abrir página do jogo">
+            <img src="assets/games/train_simulator_classic/train_simulator_classic_capsule.jpg" alt="Capa do jogo: Train Simulator Classic" class="imagem-lista" />
+            <div class="detalhes-lista">
+              <h3 class="nome-lista">Train Simulator Classic</h3>
+              <p class="descricao-lista">Simulação, Trens, Realista, Hobby</p>
+              <span class="plataformas">Windows</span>
+            </div>
+            <div class="preco-lista">
+              <span class="desconto">-90%</span>
+              <div class="valores-preco">
+                <span class="preco-original">R$ 129,99</span>
+                <span class="preco-final">R$ 12,99</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card-lista-jogo" tabindex="0" role="link" data-href="#" aria-label="Valheim - abrir página do jogo">
+            <img src="assets/games/valheim/valheim_capsule.jpg" alt="Capa do jogo: Valheim" class="imagem-lista" />
+            <div class="detalhes-lista">
+              <h3 class="nome-lista">Valheim</h3>
+              <p class="descricao-lista">Sobrevivência, Sandbox, Viking, Multijogador, Exploração</p>
+              <span class="plataformas">Windows, Linux</span>
+            </div>
+            <div class="preco-lista">
+              <span class="desconto">-40%</span>
+              <div class="valores-preco">
+                <span class="preco-original">R$ 37,99</span>
+                <span class="preco-final">R$ 22,79</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="rodape" aria-label="Rodapé do site">
+      <div class="conteudo-rodape">
+        <div class="links-rodape">
+          <a href="#" aria-label="Criar conta gratuita no Iara Games">Cadastre-se e entre no Iara Games</a>
+        </div>
+        <p class="texto-rodape">🎮 © 2024 Iara Games 🎮 Todos os direitos reservados 🎮</p>
+      </div>
+    </footer>
+
+    <!-- --------------------------
+         Painel de Acessibilidade
+         -------------------------- -->
+    <div id="a11y-floating" class="a11y-floating" aria-hidden="true">
+      <div id="a11y-panel" class="a11y-panel" role="dialog" aria-modal="true" aria-label="Painel de Acessibilidade">
+        <div class="a11y-header">
+          <h3 class="a11y-title">Acessibilidade</h3>
+          <button id="a11y-close" class="a11y-close-btn" aria-label="Fechar painel de acessibilidade">X</button>
+        </div>
+
+        <div class="a11y-section">
+          <strong>Tamanho do Texto</strong>
+          <div class="a11y-controls">
+            <button class="a11y-btn text-size" data-size="normal">Texto Normal</button>
+            <button class="a11y-btn text-size" data-size="medio">Texto Médio</button>
+            <button class="a11y-btn text-size" data-size="grande">Texto Grande</button>
+          </div>
+        </div>
+
+        <div class="a11y-section">
+          <strong>Visual</strong>
+          <div class="a11y-controls">
+            <button class="a11y-btn visual" data-visual="claro">Visual Claro</button>
+            <button class="a11y-btn visual" data-visual="escuro">Visual Escuro</button>
+            <button class="a11y-btn visual" data-visual="alto-contraste">Alto Contraste</button>
+            <button class="a11y-btn visual" data-visual="monocromatico">Monocromático</button>
+          </div>
+        </div>
+
+        <div class="a11y-section">
+          <strong>Fonte</strong>
+          <div class="a11y-controls">
+            <button class="a11y-btn font-switch" data-font="inter">Inter</button>
+            <button class="a11y-btn font-switch" data-font="lexend">Lexend</button>
+            <button class="a11y-btn font-switch" data-font="baloo">Baloo</button>
+            <button class="a11y-btn font-switch" data-font="system">Padrão</button>
+          </div>
+        </div>
+
+        <div class="a11y-section">
+          <strong>Leitor de Tela</strong>
+          <div class="a11y-controls">
+            <button id="toggle-hover-reader" class="a11y-btn" aria-pressed="false">Leitura por Hover: Off</button>
+            <small class="a11y-note">Segure o mouse sobre um elemento por 1s</small>
+          </div>
+        </div>
+
+        <div class="a11y-section a11y-footer">
+          <button id="reset-a11y" class="a11y-btn">Restaurar Padrões</button>
         </div>
       </div>
     </div>
+    <button id="a11y-toggle" class="a11y-main-btn" aria-expanded="false" aria-controls="a11y-panel" aria-label="Abrir opções de acessibilidade">♿</button>
 
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        /* ===========================================================
-       🔹 CONFIGURAÇÕES PERSONALIZÁVEIS
-       =========================================================== */
-        const CONFIG = {
-          // ⏳ Timer do jogo
-          TIME_LIMIT: 45, // tempo total de jogo (segundos)
-          WARNING_THRESHOLD: 10, // quando mudar para cor de aviso
-          ALERT_THRESHOLD: 5, // quando mudar para cor de alerta
-
-          // 🎴 Cartas
-          PREVIEW_DURATION: 6000, // tempo que as cartas ficam viradas no início (ms)
-
-          // 📄 Telas
-          FINAL_SCREEN_DURATION: 15000, // tempo que a tela final permanece (ms)
-          TRANSITION_DURATION: 800, // tempo da transição Fade+Zoom entre telas (ms)
-
-          // 🔊 Sons
-          VOLUME: 0.5, // Volume padrão para todos os sons
-        };
-
-        // Configurações de volume individuais para cada som
-        const AUDIO_VOLUMES = {
-          startScreen: 0.3,
-          playButton: 0.8,
-          timerStart: 0.3,
-          cardFlip: 0.8,
-          correctMatch: 0.4,
-          wrongMatch: 0.9,
-          timerEnd: 0.5,
-          endScreen: 0.8,
-        };
-
-        /* ===========================================================
-       🔹 VARIÁVEIS DO JOGO
-       =========================================================== */
-        const gameGrid = document.getElementById("game-grid");
-        const cardImages = [
-          "assets/carta1.png",
-          "assets/carta2.png",
-          "assets/carta3.png",
-          "assets/carta4.png",
-          "assets/carta5.png",
-          "assets/carta6.png",
-          "assets/carta7.png",
-          "assets/carta8.png",
-          "assets/carta9.png",
-        ];
-
-        const TOTAL_PARES = cardImages.length; // 9 pares no total
-
-        let cards = [];
-        let flippedCards = [];
-        let matchedCards = 0;
-        let canFlip = false;
-
-        const timeLeftEl = document.getElementById("time-left");
-        const timerPathRemaining = document.getElementById("timer-path-remaining");
-        const FULL_DASH_ARRAY = 283;
-        let timeLeft = CONFIG.TIME_LIMIT;
-        let timerAnimationId;
-        let startTime;
-
-        // Caminhos para os arquivos de som na pasta assets/sounds
-        const AUDIO_PATHS = {
-          startScreen: "assets/sounds/start_screen.mp3",
-          playButton: "assets/sounds/play_button.mp3",
-          timerStart: "assets/sounds/timer_start.mp3",
-          cardFlip: "assets/sounds/card_flip.mp3",
-          correctMatch: "assets/sounds/correct_match.mp3",
-          wrongMatch: "assets/sounds/wrong_match.mp3",
-          timerEnd: "assets/sounds/timer_end.mp3",
-          endScreen: "assets/sounds/end_screen.mp3",
-        };
-
-        let backgroundMusic;
-        let timerSound; // Nova variável para controlar o som do timer
-        let endScreenSound; // Nova variável para controlar o som da tela final
-
-        /* ===========================================================
-       🔹 FUNÇÃO: Tocar som de efeito
-       =========================================================== */
-        function playSound(soundPath) {
-          const audio = new Audio(soundPath);
-          audio.volume = AUDIO_VOLUMES[Object.keys(AUDIO_PATHS).find((key) => AUDIO_PATHS[key] === soundPath)] || CONFIG.VOLUME;
-          audio.play().catch((error) => console.error("Erro ao tocar o som:", error));
-        }
-
-        /* ===========================================================
-       🔹 FUNÇÃO: Tocar música de fundo
-       =========================================================== */
-        function playBackgroundMusic() {
-          // Pausa o som da tela final antes de começar a tocar a música de fundo
-          if (endScreenSound) {
-            endScreenSound.pause();
-            endScreenSound.currentTime = 0;
-          }
-
-          if (!backgroundMusic) {
-            backgroundMusic = new Audio(AUDIO_PATHS.startScreen);
-            backgroundMusic.loop = true; // Define a música para tocar em loop
-            backgroundMusic.volume = AUDIO_VOLUMES.startScreen;
-          }
-          backgroundMusic.play().catch((error) => console.error("Erro ao tocar a música de fundo:", error));
-        }
-
-        function pauseBackgroundMusic() {
-          if (backgroundMusic) {
-            backgroundMusic.pause();
-          }
-        }
-
-        // Adiciona uma nova função para parar o som do timer
-        function stopTimerSound() {
-          if (timerSound) {
-            timerSound.pause();
-            timerSound.currentTime = 0;
-          }
-        }
-
-        /* ===========================================================
-       🔹 FUNÇÃO: Troca de telas com Fade + Zoom
-       =========================================================== */
-        function showScreen(screenId) {
-          document.querySelectorAll(".page-transition").forEach((el) => {
-            el.classList.remove("active");
-          });
-
-          const screen = document.getElementById(screenId);
-
-          // Força reflow para resetar animação
-          void screen.offsetWidth;
-
-          screen.classList.add("active");
-        }
-
-        /* ===========================================================
-       🔹 FUNÇÃO: Atualiza quantidade de pares
-       =========================================================== */
-        const updatePares = () => {
-          const pares = matchedCards / 2;
-          document.getElementById("pares-count").textContent = pares;
-
-          // Checa se todos os pares foram encontrados
-          if (pares === TOTAL_PARES) {
-            endGame(true); // Fim de jogo com vitória
-          }
-        };
-
-        /* ===========================================================
-       🔹 FUNÇÃO: Embaralhar cartas
-       =========================================================== */
-        const shuffle = (array) => {
-          for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
-          }
-          return array;
-        };
-
-        /* ===========================================================
-       🔹 FUNÇÃO: Criar tabuleiro
-       =========================================================== */
-        const createBoard = () => {
-          gameGrid.innerHTML = "";
-          cards = shuffle([...cardImages, ...cardImages]);
-          matchedCards = 0;
-          updatePares();
-
-          const frag = document.createDocumentFragment();
-
-          cards.forEach((imageSrc, index) => {
-            const cardElement = document.createElement("div");
-            cardElement.classList.add("card", "rounded-lg", "shadow-md", "cursor-pointer", "transition-all", "duration-300");
-            cardElement.setAttribute("data-index", index);
-            cardElement.setAttribute("data-image", imageSrc);
-            cardElement.innerHTML = `
-          <div class="card-inner w-full h-full">
-            <div class="card-front rounded-lg"></div>
-            <div class="card-back rounded-lg">
-              <img src="${imageSrc}" alt="Frente da Carta" class="w-full h-full object-cover rounded-lg" loading="lazy">
-            </div>
-          </div>
-        `;
-            frag.appendChild(cardElement);
-          });
-
-          gameGrid.appendChild(frag);
-        };
-
-        /* ===========================================================
-       🔹 FUNÇÃO: Mostrar cartas no início
-       =========================================================== */
-        const previewCards = () => {
-          const allCards = document.querySelectorAll(".card");
-          allCards.forEach((c) => c.classList.add("flipped"));
-
-          setTimeout(() => {
-            allCards.forEach((c) => c.classList.remove("flipped"));
-            canFlip = true;
-            startTimer();
-          }, CONFIG.PREVIEW_DURATION);
-        };
-
-        /* ===========================================================
-       🔹 FUNÇÃO: Clique nas cartas
-       =========================================================== */
-        gameGrid.addEventListener("click", (event) => {
-          if (!canFlip) return;
-          const card = event.target.closest(".card");
-          if (!card || card.classList.contains("flipped") || card.classList.contains("matched")) return;
-
-          playSound(AUDIO_PATHS.cardFlip);
-          flipCard(card);
-        });
-
-        const flipCard = (card) => {
-          if (!canFlip) return;
-          if (card.classList.contains("flipped") || flippedCards.length === 2) return;
-
-          card.classList.add("flipped");
-          flippedCards.push(card);
-
-          if (flippedCards.length === 2) {
-            canFlip = false;
-            setTimeout(checkMatch, 1000);
-          }
-        };
-
-        const checkMatch = () => {
-          const [card1, card2] = flippedCards;
-          const image1 = card1.dataset.image;
-          const image2 = card2.dataset.image;
-
-          if (image1 === image2) {
-            playSound(AUDIO_PATHS.correctMatch);
-            card1.classList.add("opacity-50", "cursor-not-allowed", "pointer-events-none", "matched");
-            card2.classList.add("opacity-50", "cursor-not-allowed", "pointer-events-none", "matched");
-            matchedCards += 2;
-            updatePares();
-          } else {
-            playSound(AUDIO_PATHS.wrongMatch);
-            card1.classList.remove("flipped");
-            card2.classList.remove("flipped");
-          }
-
-          flippedCards = [];
-          canFlip = true;
-        };
-
-        /* ===========================================================
-       🔹 FUNÇÕES DO TIMER
-       =========================================================== */
-        function startTimer() {
-          // Inicia o som do timer e armazena a referência para controlá-lo
-          timerSound = new Audio(AUDIO_PATHS.timerStart);
-          timerSound.volume = AUDIO_VOLUMES.timerStart;
-          timerSound.play().catch((error) => console.error("Erro ao tocar o som do timer:", error));
-
-          startTime = performance.now();
-          timerPathRemaining.setAttribute("stroke-dasharray", `${FULL_DASH_ARRAY} ${FULL_DASH_ARRAY}`);
-          timerAnimationId = requestAnimationFrame(updateTimer);
-        }
-
-        function updateTimer(timestamp) {
-          const elapsedTime = (timestamp - startTime) / 1000;
-          timeLeft = CONFIG.TIME_LIMIT - elapsedTime;
-
-          if (timeLeft <= 0) {
-            timeLeft = 0;
-            timeLeftEl.innerText = formatTime(timeLeft);
-            setCircleDasharray();
-            endGame();
-            return;
-          }
-
-          timeLeftEl.innerText = formatTime(timeLeft);
-          setCircleDasharray();
-          timerAnimationId = requestAnimationFrame(updateTimer);
-        }
-
-        function formatTime(time) {
-          return Math.ceil(time);
-        }
-
-        function calculateTimeFraction() {
-          return Math.max(0, timeLeft / CONFIG.TIME_LIMIT);
-        }
-
-        function setCircleDasharray() {
-          const circleDasharray = `${(calculateTimeFraction() * FULL_DASH_ARRAY).toFixed(0)} 283`;
-          timerPathRemaining.setAttribute("stroke-dasharray", circleDasharray);
-
-          if (timeLeft <= CONFIG.ALERT_THRESHOLD) {
-            timerPathRemaining.setAttribute("stroke", getComputedStyle(document.documentElement).getPropertyValue("--timer-alert"));
-          } else if (timeLeft <= CONFIG.WARNING_THRESHOLD) {
-            timerPathRemaining.setAttribute("stroke", getComputedStyle(document.documentElement).getPropertyValue("--timer-warning"));
-          } else {
-            timerPathRemaining.setAttribute("stroke", getComputedStyle(document.documentElement).getPropertyValue("--timer-default"));
-          }
-        }
-
-        /* ===========================================================
-       🔹 FUNÇÃO: Encerrar jogo
-       =========================================================== */
-        function endGame(isWin = false) {
-          document.querySelectorAll(".card").forEach((c) => {
-            c.style.pointerEvents = "none";
-          });
-          if (timerAnimationId) cancelAnimationFrame(timerAnimationId);
-
-          // Para o som do timer antes de tocar os outros sons de final de jogo
-          stopTimerSound();
-          playSound(AUDIO_PATHS.timerEnd);
-
-          const finalMessage = document.getElementById("final-message");
-          const pares = matchedCards / 2;
-          let message = "";
-
-          if (isWin) {
-            message = `Muito bem, você encontrou <span class="text-6xl text-green-700 font-extrabold">TODOS</span> os pares!`;
-          } else if (pares === 0) {
-            message = "Mas que pena, você não encontrou nenhum par.";
-          } else if (pares === 1) {
-            message = `Você encontrou <span class="text-7xl text-rose-600 font-extrabold">${pares}</span> par!`;
-          } else if (pares >= 1 && pares <= 8) {
-            message = `Você encontrou <span class="text-6xl text-red-700 font-extrabold">${pares}</span> pares!`;
-          }
-
-          finalMessage.innerHTML = message;
-
-          // Espera 2 segundos antes de mostrar a tela final e tocar o som
-          setTimeout(() => {
-            // Armazena a referência do som de end screen
-            endScreenSound = new Audio(AUDIO_PATHS.endScreen);
-            endScreenSound.volume = AUDIO_VOLUMES.endScreen;
-            endScreenSound.play().catch((error) => console.error("Erro ao tocar o som de tela final:", error));
-
-            showScreen("final-screen");
-
-            // Após a duração da tela final, retorna para a tela inicial e retoma a música
-            setTimeout(() => {
-              showScreen("start-screen");
-              playBackgroundMusic();
-            }, CONFIG.FINAL_SCREEN_DURATION);
-          }, 2000); // 2 segundos
-        }
-
-        /* ===========================================================
-       🔹 FUNÇÃO: Pré-carregar imagens
-       =========================================================== */
-        function preloadImages(list) {
-          setTimeout(() => {
-            list.forEach((src) => {
-              const img = new Image();
-              img.src = src;
-            });
-            new Image().src = "assets/logo.png";
-            new Image().src = "/assets/background.png";
-          }, 50);
-        }
-
-        /* ===========================================================
-       🔹 FUNÇÃO: Iniciar jogo
-       =========================================================== */
-        function startGame() {
-          // Limpa o grid do jogo e reseta o estado
-          gameGrid.innerHTML = "";
-          flippedCards = [];
-          matchedCards = 0;
-          canFlip = false;
-
-          // Reseta o timer para o valor inicial e atualiza a exibição
-          timeLeft = CONFIG.TIME_LIMIT;
-          timeLeftEl.innerText = formatTime(timeLeft);
-          setCircleDasharray();
-
-          pauseBackgroundMusic();
-          playSound(AUDIO_PATHS.playButton);
-          showScreen("game-wrapper");
-          createBoard();
-          preloadImages(cardImages);
-          previewCards();
-        }
-
-        // Toca o som da tela inicial ao carregar
-        playBackgroundMusic();
-
-        document.getElementById("start-button").addEventListener("click", startGame);
-      });
-    </script>
+    <!-- Script externo -->
+    <script src="js/script.js"></script>
   </body>
 </html>

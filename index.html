@@ -2,428 +2,590 @@
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Iara Games</title>
-    <link rel="stylesheet" href="reset.css" />
-    <link rel="stylesheet" href="styles.css" />
-    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>Jogo da Memória</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Schoolbell&display=swap");
+
+      :root {
+        /* 🔹 Tamanhos */
+        --card-size-h: 23vh;
+        --card-size-w: calc(var(--card-size-h) / 1.39);
+        --logo-w: 12vw;
+        --logo-h: auto;
+
+        /* 🔹 Cores principais */
+        --color-red-bg: #c9362d;
+        --color-green-bg: #a8bd47;
+        --color-red-apple: #c41710;
+
+        --color-book-red: #c4362d;
+        --color-book-green: #a9bc39;
+        --color-book-page: #f3d6af;
+
+        --color-fiap-red: #f90667;
+        --color-fiap-green: #37c8b7;
+        --color-fiap-greencian: #29f4d5;
+        --color-fiap-yellow: #fff52a;
+
+        /* 🔹 Timer */
+        --timer-arc-bg: #00000000;
+        --timer-center-bg: #ffffff00;
+        --timer-color-text: #000000;
+
+        /* 🔹 Timer estados */
+        --timer-default: #10b981;
+        --timer-warning: #f8cb15;
+        --timer-alert: #ef4444;
+
+        /* 🔹 Transição */
+        --transition-speed: 2s;
+      }
+
+      body {
+        font-family: "Schoolbell", sans-serif;
+        user-select: none; /* Desativa a seleção de texto */
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        touch-action: manipulation; /* Desativa pinça de zoom */
+      }
+
+      /* Cartas */
+      .card-inner {
+        transform-style: preserve-3d;
+        transition: transform 0.6s;
+        position: relative;
+      }
+      .card.flipped .card-inner {
+        transform: rotateY(180deg);
+      }
+      .card-front,
+      .card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .card-front {
+        background-image: url("assets/verso.png");
+        background-size: cover;
+        background-position: center;
+      }
+      .card-back {
+        transform: rotateY(180deg);
+      }
+      .card {
+        width: var(--card-size-w);
+        height: var(--card-size-h);
+      }
+      #game-logo img {
+        width: var(--logo-w);
+        height: var(--logo-h);
+      }
+      .timer-circle {
+        transform: rotate(-90deg);
+      }
+      .timer-path-remaining {
+        stroke-linecap: round;
+      }
+
+      /* 🔹 Transição Fade + Zoom */
+      .page-transition {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.95);
+        opacity: 0;
+        width: 70%;
+        height: 60%;
+        transition: opacity 0.8s ease, transform 0.8s ease;
+        pointer-events: none;
+      }
+
+      .page-transition.active {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+        pointer-events: auto;
+        z-index: 20;
+      }
+    </style>
   </head>
+  <body class="h-screen w-screen flex items-center justify-center overflow-hidden">
+    <img src="/assets/background2.png" alt="Imagem de fundo" class="z-0 absolute inset-0 h-full w-full bg-contain" />
 
-  <body class="modo-escuro">
-    <!-- Cabeçalho -->
-    <header class="cabecalho">
-      <div class="conteudo-cabecalho">
-        <h1>
-          <a href="#" class="logo"><img src="logo.png" alt="Iara Games Logo" />Iara Games</a>
-        </h1>
-        <nav aria-label="Menu principal">
-          <ul class="menu-navegacao">
-            <li><a href="#">Loja</a></li>
-            <li><a href="#">biblioteca</a></li>
-            <li><a href="#">Fórum</a></li>
-            <li><a href="#">Suporte</a></li>
-            <li><a href="#">Meu Perfil</a></li>
-          </ul>
-        </nav>
-        <div class="acoes-usuario">
-          <button class="botao-instalar" aria-label="Instalar o aplicativo Iara-Games">Instalar Iara-Games</button>
-          <button class="botao-acao login-btn" aria-label="Fazer login na sua conta Iara Games">Logar</button>
-          <a href="cadastro.html" class="botao-acao" aria-label="Cadastrar nova conta Iara Games">Cadastre-se</a>
-        </div>
+    <!-- 🔹 Container -->
+    <div id="screens-container" class="relative w-full h-full flex items-center justify-center">
+      <!-- Tela Inicial -->
+      <div
+        id="start-screen"
+        class="w-[70%] h-[65%] page-transition active bg-purple-600/70 border-4 border-slate-900 rounded-[70px] drop-shadow-2xl flex flex-col items-center justify-center gap-6"
+      >
+        <img src="assets/logo.png" alt="Logo FIAP School" class="h-28 w-auto mb-4" />
+        <p class="tracking-wider text-4xl text-center text-gray-900 mb-4">Ajude A <strong class="text-4xl">FAMÍLIA GORGONZOLA </strong> encontrar os seus pares no...</p>
+        <h1 class="text-6xl font-bold text-gray-900 mb-4">Jogo da Memória</h1>
+        <button
+          id="start-button"
+          class="bg-yellow-500/70 border-2 border-gray-900 text-black font-bold tracking-[3px] mt-10 py-4 px-10 rounded-[30px] text-3xl hover:bg-green-400 hover:text-black transition-all duration-300 transform hover:scale-105"
+        >
+          VAMOS JOGAR!
+        </button>
       </div>
-    </header>
 
-    <!-- Subnavegação -->
-    <nav class="sub-navegacao" aria-label="Menu secundário">
-      <div class="conteudo-subnavegacao">
-        <ul class="menu-subnavegacao">
-          <li><a href="#">Minha Lista</a></li>
-          <li><a href="#">Categorias</a></li>
-          <li><a href="#">Novidades</a></li>
-          <li><a href="#">Top 5 da IARA</a></li>
-        </ul>
+      <!-- Tela Final -->
+      <div
+        id="final-screen"
+        class="w-[70%] h-[65%] page-transition bg-yellow-300 border-4 border-slate-900 rounded-[70px] drop-shadow-2xl flex flex-col items-center justify-center gap-6"
+      >
+        <img src="assets/logo.png" alt="Logo FIAP School" class="h-28 w-auto mb-4" />
+        <p class="tracking-wider text-4xl text-center text-gray-900 mb-4"><strong>Muito Obrigado pela ajuda...</strong></p>
+        <h1 id="final-message" class="text-5xl font-bold text-gray-900 mb-4"></h1>
       </div>
-    </nav>
 
-    <!-- Conteúdo Principal -->
-    <main class="conteudo-principal">
-      <!-- Banner do Festival -->
-      <section class="banner-festival" aria-labelledby="titulo-festival">
-        <div class="conteudo-festival">
-          <h2 id="titulo-festival" class="logo-festival">Iara Games de Verão</h2>
-          <p class="datas-festival">22 de Setembro</p>
-          <p class="descricao-festival">Descontos, Demos e Muito Mais</p>
-        </div>
-      </section>
+      <!-- Tela do Jogo -->
+      <div id="game-wrapper" class="page-transition w-full h-full flex">
+        <img src="assets/background2.png" class="z-10 absolute inset-0 h-full w-full bg-contain" alt="background" />
 
-      <!-- Seção em Destaque -->
-      <section class="secao-destaque" aria-labelledby="titulo-destaques">
-        <aside class="barra-lateral" aria-label="Navegação lateral de recomendações">
-          <h2 id="titulo-destaques">Marcadores</h2>
-          <a href="#" class="item-barra">Recomendados</a>
-          <a href="#" class="item-barra">Lançamentos</a>
-          <a href="#" class="item-barra">5 Estrelas</a>
-          <a href="#" class="item-barra">Por Amigos</a>
-          <a href="#" class="item-barra">Por Curadores</a>
-          <a href="#" class="item-barra">Mais Vendidos</a>
-          <a href="#" class="item-barra">Populares</a>
-          <a href="#" class="item-barra">Melhor Avaliação</a>
-          <a href="#" class="item-barra">Queridos dos Influêncers</a>
-          <a href="#" class="item-barra">Tags</a>
-          <a href="#" class="item-barra">Iara Deck</a>
-        </aside>
-
-        <div class="principal-destaque">
-          <div class="container-carrossel">
-            <input type="radio" id="slide_1" name="carrossel" checked />
-            <input type="radio" id="slide_2" name="carrossel" />
-            <input type="radio" id="slide_3" name="carrossel" />
-
-            <div class="slides-carrossel">
-              <div class="slide" id="slide-1">
-                <img src="https://via.placeholder.com/980x400/4A90E2/FFFFFF?text=JOGO+DESTAQUE+1" alt="Imagem do Jogo Destaque 1" />
-              </div>
-              <div class="slide" id="slide-2">
-                <img src="https://via.placeholder.com/980x400/7B68EE/FFFFFF?text=JOGO+DESTAQUE+2" alt="Imagem do Jogo Destaque 2" />
-              </div>
-              <div class="slide" id="slide-3">
-                <img src="https://via.placeholder.com/980x400/90EE90/FFFFFF?text=JOGO+DESTAQUE+3" alt="Imagem do Jogo Destaque 3" />
-              </div>
-            </div>
+        <div id="itens-esquerda" class="h-screen flex-1 flex flex-col items-center justify-center">
+          <div id="game-logo" class="z-20 h-[30%] w-full flex items-end justify-center">
+            <img src="assets/logo.png" alt="Logo do Jogo" />
           </div>
-          <div class="navegacao-carrossel">
-            <label for="slide_1" class="ponto-navegacao" aria-label="Ir para o slide 1"></label>
-            <label for="slide_2" class="ponto-navegacao" aria-label="Ir para o slide 2"></label>
-            <label for="slide_3" class="ponto-navegacao" aria-label="Ir para o slide 3"></label>
-          </div>
-        </div>
-      </section>
-
-      <!-- Seção Iara Games Deck -->
-      <section class="secao-deck" aria-labelledby="titulo-deck">
-        <img src="deck.jpg" alt="Imagem do console portátil Iara Deck" class="imagem-deck" />
-        <div class="conteudo-deck">
-          <h2 id="titulo-deck">🎮 Jogue no Iara Deck.</h2>
-          <p>Curta sua biblioteca Iara Games em qualquer lugar com o portátil gamer.</p>
-        </div>
-      </section>
-
-      <!-- Seção de Descontos -->
-      <section class="secao-descontos" aria-labelledby="titulo-promocoes">
-        <div class="cabecalho-secao">
-          <h2 id="titulo-promocoes" class="titulo-secao">Promoções e Eventos</h2>
-          <a href="#" class="mais-jogos">Ver Mais</a>
-        </div>
-        <div class="grid-jogos">
-          <!-- Cards existentes -->
-          <article class="card-jogo" tabindex="0" role="link" data-href="#" aria-label="Microsoft Flight Simulator - abrir página do jogo">
-            <img src="flight-simulator.jpg" alt="Microsoft Flight Simulator" class="imagem-jogo" />
-            <div class="detalhes-jogo">
-              <h3 class="nome-jogo">Microsoft Flight Simulator</h3>
-              <p class="preco-jogo">
-                <span class="desconto">-60%</span>
-                <span class="preco-original">R$ 299,00</span>
-                <span class="preco-final">R$ 119,00</span>
-              </p>
-            </div>
-          </article>
-
-          <article class="card-jogo" tabindex="0" role="link" data-href="#">
-            <img src="devil-may-cry.jpg" alt="Devil May Cry 5" class="imagem-jogo" />
-            <div class="detalhes-jogo">
-              <h3 class="nome-jogo">Devil May Cry 5</h3>
-              <p class="preco-jogo">
-                <span class="desconto">-67%</span>
-                <span class="preco-original">R$ 149,00</span>
-                <span class="preco-final">R$ 49,00</span>
-              </p>
-            </div>
-          </article>
-
-          <article class="card-jogo" tabindex="0" role="link" data-href="#">
-            <img src="viscera.jpg" alt="Viscera Cleanup Detail" class="imagem-jogo" />
-            <div class="detalhes-jogo">
-              <h3 class="nome-jogo">Viscera Cleanup Detail</h3>
-              <p class="preco-jogo">
-                <span class="desconto">-70%</span>
-                <span class="preco-original">R$ 59,00</span>
-                <span class="preco-final">R$ 17,00</span>
-              </p>
-            </div>
-          </article>
-
-          <!-- NOVOS CARDS - SEÇÃO DESCONTOS -->
-          <article class="card-jogo" tabindex="0" role="link" data-href="#" aria-label="The Elder Scrolls V: Skyrim - abrir página do jogo">
-            <img src="skyrim.jpg" alt="The Elder Scrolls V: Skyrim" class="imagem-jogo" />
-            <div class="detalhes-jogo">
-              <h3 class="nome-jogo">The Elder Scrolls V: Skyrim</h3>
-              <p class="preco-jogo">
-                <span class="desconto">-75%</span>
-                <span class="preco-original">R$ 99,90</span>
-                <span class="preco-final">R$ 24,97</span>
-              </p>
-            </div>
-          </article>
-
-          <article class="card-jogo" tabindex="0" role="link" data-href="#" aria-label="Red Dead Redemption 2 - abrir página do jogo">
-            <img src="rdr2.jpg" alt="Red Dead Redemption 2" class="imagem-jogo" />
-            <div class="detalhes-jogo">
-              <h3 class="nome-jogo">Red Dead Redemption 2</h3>
-              <p class="preco-jogo">
-                <span class="desconto">-50%</span>
-                <span class="preco-original">R$ 249,00</span>
-                <span class="preco-final">R$ 124,50</span>
-              </p>
-            </div>
-          </article>
-
-          <article class="card-jogo" tabindex="0" role="link" data-href="#" aria-label="Cyberpunk 2077 - abrir página do jogo">
-            <img src="cyberpunk.jpg" alt="Cyberpunk 2077" class="imagem-jogo" />
-            <div class="detalhes-jogo">
-              <h3 class="nome-jogo">Cyberpunk 2077</h3>
-              <p class="preco-jogo">
-                <span class="desconto">-33%</span>
-                <span class="preco-original">R$ 199,90</span>
-                <span class="preco-final">R$ 133,93</span>
-              </p>
-            </div>
-          </article>
-
-          <article class="card-jogo" tabindex="0" role="link" data-href="#" aria-label="Horizon Zero Dawn - abrir página do jogo">
-            <img src="horizon.jpg" alt="Horizon Zero Dawn" class="imagem-jogo" />
-            <div class="detalhes-jogo">
-              <h3 class="nome-jogo">Horizon Zero Dawn</h3>
-              <p class="preco-jogo">
-                <span class="desconto">-60%</span>
-                <span class="preco-original">R$ 179,90</span>
-                <span class="preco-final">R$ 71,96</span>
-              </p>
-            </div>
-          </article>
-
-          <article class="card-jogo" tabindex="0" role="link" data-href="#" aria-label="Resident Evil 4 Remake - abrir página do jogo">
-            <img src="re4.jpg" alt="Resident Evil 4 Remake" class="imagem-jogo" />
-            <div class="detalhes-jogo">
-              <h3 class="nome-jogo">Resident Evil 4 Remake</h3>
-              <p class="preco-jogo">
-                <span class="desconto">-45%</span>
-                <span class="preco-original">R$ 219,90</span>
-                <span class="preco-final">R$ 120,94</span>
-              </p>
-            </div>
-          </article>
-          <!-- FIM DOS NOVOS CARDS -->
-        </div>
-      </section>
-
-      <!-- Seção Categorias -->
-      <section class="secao-categorias" aria-labelledby="titulo-categorias">
-        <div class="cabecalho-secao">
-          <h2 id="titulo-categorias" class="titulo-secao">Explorar por Categoria</h2>
-        </div>
-        <div class="grid-categorias">
-          <a href="#" class="card-categoria" tabindex="0" role="link" data-href="#" aria-label="Categoria Casual">
-            <img src="casual.jpg" alt="Categoria de Jogos Casuais" class="imagem-categoria" />
-            <span class="nome-categoria">Casual</span>
-          </a>
-          <a href="#" class="card-categoria" tabindex="0" role="link" data-href="#" aria-label="Categoria Rogue-Like">
-            <img src="roguelike.jpg" alt="Categoria de Jogos Rogue-Like" class="imagem-categoria" />
-            <span class="nome-categoria">Rogue-Like</span>
-          </a>
-          <a href="#" class="card-categoria" tabindex="0" role="link" data-href="#" aria-label="Categoria Esportes">
-            <img src="esportes.jpg" alt="Categoria de Jogos de Esporte" class="imagem-categoria" />
-            <span class="nome-categoria">Esportes</span>
-          </a>
-          <!-- NOVAS CATEGORIAS -->
-          <a href="#" class="card-categoria" tabindex="0" role="link" data-href="#" aria-label="Categoria Estratégia">
-            <img src="estrategia.jpg" alt="Categoria de Jogos de Estratégia" class="imagem-categoria" />
-            <span class="nome-categoria">Estratégia</span>
-          </a>
-          <a href="#" class="card-categoria" tabindex="0" role="link" data-href="#" aria-label="Categoria Sandbox">
-            <img src="sandbox.jpg" alt="Categoria de Jogos Sandbox" class="imagem-categoria" />
-            <span class="nome-categoria">Sandbox</span>
-          </a>
-          <a href="#" class="card-categoria" tabindex="0" role="link" data-href="#" aria-label="Categoria RPG">
-            <img src="rpg.jpg" alt="Categoria de Jogos RPG" class="imagem-categoria" />
-            <span class="nome-categoria">RPG</span>
-          </a>
-        </div>
-      </section>
-
-      <!-- Lista de Jogos -->
-      <section class="secao-lista" aria-labelledby="titulo-lista">
-        <div class="cabecalho-secao">
-          <h2 id="titulo-lista" class="titulo-secao">Novos e Notáveis</h2>
-        </div>
-        <div class="lista-jogos">
-          <!-- Cards Lista Existentes -->
-          <article class="card-lista-jogo" tabindex="0" role="link" data-href="#" aria-label="No, I'm not a Human - abrir página do jogo">
-            <img src="https://via.placeholder.com/231x107" alt="Capa do jogo: No, I'm not a Human" class="imagem-lista" />
-            <div class="detalhes-lista">
-              <h3 class="nome-lista">No, I'm not a Human</h3>
-              <p class="descricao-lista">Terror, Um Só Jogador, Escolhas Importantes, História Rica</p>
-              <span class="plataformas">Windows</span>
-            </div>
-            <div class="preco-lista">
-              <span class="desconto">-10%</span>
-              <div class="valores-preco">
-                <span class="preco-original">R$ 46,99</span>
-                <span class="preco-final">R$ 42,29</span>
-              </div>
-            </div>
-          </article>
-
-          <article class="card-lista-jogo" tabindex="0" role="link" data-href="#">
-            <img src="https://via.placeholder.com/231x107" alt="Capa do jogo: Greedland" class="imagem-lista" />
-            <div class="detalhes-lista">
-              <h3 class="nome-lista">Greedland</h3>
-              <p class="descricao-lista">Shoot 'em Up, Roguelite, Twin Stick Shooter, Bullet Hell</p>
-              <span class="plataformas">Windows</span>
-            </div>
-            <div class="preco-lista">
-              <span class="desconto">-36%</span>
-              <div class="valores-preco">
-                <span class="preco-original">R$ 44,61</span>
-                <span class="preco-final">R$ 28,54</span>
-              </div>
-            </div>
-          </article>
-          <!-- NOVOS 4 CARDS LISTA -->
-          <article class="card-lista-jogo" tabindex="0" role="link" data-href="#" aria-label="Deep Rock Galactic - abrir página do jogo">
-            <img src="https://via.placeholder.com/231x107/325a75/FFFFFF?text=DEEP+ROCK" alt="Capa do jogo: Deep Rock Galactic" class="imagem-lista" />
-            <div class="detalhes-lista">
-              <h3 class="nome-lista">Deep Rock Galactic</h3>
-              <p class="descricao-lista">FPS, Co-op, Exploração, Sobrevivência, Anões Espaciais</p>
-              <span class="plataformas">Windows, Iara Deck</span>
-            </div>
-            <div class="preco-lista">
-              <span class="desconto">-50%</span>
-              <div class="valores-preco">
-                <span class="preco-original">R$ 109,00</span>
-                <span class="preco-final">R$ 54,50</span>
-              </div>
-            </div>
-          </article>
-
-          <article class="card-lista-jogo" tabindex="0" role="link" data-href="#" aria-label="Elden Ring - abrir página do jogo">
-            <img src="https://via.placeholder.com/231x107/704170/FFFFFF?text=ELDEN+RING" alt="Capa do jogo: Elden Ring" class="imagem-lista" />
-            <div class="detalhes-lista">
-              <h3 class="nome-lista">Elden Ring</h3>
-              <p class="descricao-lista">Ação, RPG, Mundo Aberto, Fantasia Sombria, Dificuldade Elevada</p>
-              <span class="plataformas">Windows</span>
-            </div>
-            <div class="preco-lista">
-              <span class="desconto">Novo</span>
-              <div class="valores-preco">
-                <span class="preco-original"></span>
-                <span class="preco-final">R$ 299,90</span>
-              </div>
-            </div>
-          </article>
-
-          <article class="card-lista-jogo" tabindex="0" role="link" data-href="#" aria-label="Celeste - abrir página do jogo">
-            <img src="https://via.placeholder.com/231x107/ff7f50/FFFFFF?text=CELESTE" alt="Capa do jogo: Celeste" class="imagem-lista" />
-            <div class="detalhes-lista">
-              <h3 class="nome-lista">Celeste</h3>
-              <p class="descricao-lista">Plataforma, Pixel Art, Desafiador, Indie, Trilha Sonora Incrível</p>
-              <span class="plataformas">Windows, Mac, Iara Deck</span>
-            </div>
-            <div class="preco-lista">
-              <span class="desconto">-75%</span>
-              <div class="valores-preco">
-                <span class="preco-original">R$ 39,99</span>
-                <span class="preco-final">R$ 9,99</span>
-              </div>
-            </div>
-          </article>
-
-          <article class="card-lista-jogo" tabindex="0" role="link" data-href="#" aria-label="Stardew Valley - abrir página do jogo">
-            <img src="https://via.placeholder.com/231x107/4caf50/FFFFFF?text=STARDEW" alt="Capa do jogo: Stardew Valley" class="imagem-lista" />
-            <div class="detalhes-lista">
-              <h3 class="nome-lista">Stardew Valley</h3>
-              <p class="descricao-lista">Simulação, RPG, Gerenciamento, Relaxante, Pixel Art</p>
-              <span class="plataformas">Windows, Mac</span>
-            </div>
-            <div class="preco-lista">
-              <span class="desconto">-25%</span>
-              <div class="valores-preco">
-                <span class="preco-original">R$ 24,99</span>
-                <span class="preco-final">R$ 18,74</span>
-              </div>
-            </div>
-          </article>
-          <!-- FIM DOS NOVOS CARDS LISTA -->
-        </div>
-      </section>
-    </main>
-
-    <!-- Rodapé -->
-    <footer class="rodape" aria-label="Rodapé do site">
-      <div class="conteudo-rodape">
-        <p class="texto-rodape">Quer recomendações?</p>
-        <div class="links-rodape">
-          <a href="#" aria-label="Entrar na sua conta Iara Games">Entrar</a>
-          <a href="#" aria-label="Criar conta gratuita no Iara Games">Ou cadastre-se e entre no Iara Games grátis</a>
-        </div>
-        <p class="texto-rodape">© 2024 Valve Corporation. Todos os direitos reservados.</p>
-      </div>
-    </footer>
-
-    <!-- --------------------------
-         Painel de Acessibilidade
-         -------------------------- -->
-    <div id="a11y-floating" class="a11y-floating" aria-hidden="true">
-      <div id="a11y-panel" class="a11y-panel" role="dialog" aria-modal="true" aria-label="Painel de Acessibilidade">
-        <div class="a11y-header">
-          <h3 class="a11y-title">Acessibilidade</h3>
-          <button id="a11y-close" class="a11y-close-btn" aria-label="Fechar painel de acessibilidade">X</button>
-        </div>
-
-        <div class="a11y-section">
-          <strong>Tamanho do Texto</strong>
-          <div class="a11y-controls">
-            <button class="a11y-btn text-size" data-size="normal">Texto Normal</button>
-            <button class="a11y-btn text-size" data-size="medio">Texto Médio</button>
-            <button class="a11y-btn text-size" data-size="grande">Texto Grande</button>
+          <div id="game-space-l2" class="h-[40%] w-full flex items-center justify-center"></div>
+          <div id="game-pares" class="z-20 h-[30%] w-full flex flex-col items-center justify-start font-bold">
+            <span class="uppercase text-stone-900 text-6xl">PARES</span>
+            <span class="uppercase text-stone-900 text-2xl">ENCONTRADOS:</span>
+            <span id="pares-count" class="text-8xl text-stone-900 mt-2">0</span>
           </div>
         </div>
 
-        <div class="a11y-section">
-          <strong>Visual</strong>
-          <div class="a11y-controls">
-            <button class="a11y-btn visual" data-visual="claro">Visual Claro</button>
-            <button class="a11y-btn visual" data-visual="escuro">Visual Escuro</button>
-            <button class="a11y-btn visual" data-visual="alto-contraste">Alto Contraste</button>
-            <button class="a11y-btn visual" data-visual="monocromatico">Monocromático</button>
-          </div>
+        <div id="game-container" class="w-fit h-screen p-8 flex items-center justify-center">
+          <div id="game-grid" class="z-20 grid grid-cols-6 gap-2"></div>
         </div>
 
-        <div class="a11y-section">
-          <strong>Fonte</strong>
-          <div class="a11y-controls">
-            <button class="a11y-btn font-switch" data-font="inter">Inter</button>
-            <button class="a11y-btn font-switch" data-font="lexend">Lexend</button>
-            <button class="a11y-btn font-switch" data-font="baloo">Baloo</button>
-            <button class="a11y-btn font-switch" data-font="system">Padrão</button>
-          </div>
-        </div>
+        <div id="itens-direita" class="h-screen flex-1 flex flex-col items-center justify-center">
+          <div id="game-space-r1" class="h-[30%] z-20 w-full flex items-center justify-center"></div>
 
-        <div class="a11y-section">
-          <strong>Leitor de Tela</strong>
-          <div class="a11y-controls">
-            <button id="toggle-hover-reader" class="a11y-btn" aria-pressed="false">Leitura por Hover: Off</button>
-            <small class="a11y-note">Segure o mouse sobre um elemento por 1s</small>
+          <div id="game-time" class="h-[40%] z-20 w-full flex items-center justify-center">
+            <div class="relative w-40 h-40">
+              <svg class="w-full h-full timer-circle" viewBox="0 0 100 100">
+                <circle id="timer-bg" stroke-width="8" fill="transparent" r="45" cx="50" cy="50" stroke="var(--timer-arc-bg)" />
+                <path
+                  id="timer-path-remaining"
+                  stroke-width="8"
+                  fill="transparent"
+                  d="M 50, 50
+                  m -45, 0
+                  a 45,45 0 1,0 90,0
+                  a 45,45 0 1,0 -90,0"
+                ></path>
+                <circle id="timer-center" r="35" cx="50" cy="50" fill="var(--timer-center-bg)"></circle>
+              </svg>
+              <span id="time-left" class="absolute inset-0 flex items-center justify-center text-5xl font-bold text-stone-900"></span>
+            </div>
+            <span id="end-message" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl font-bold text-gray-900"></span>
           </div>
-        </div>
 
-        <div class="a11y-section a11y-footer">
-          <button id="reset-a11y" class="a11y-btn">Restaurar Padrões</button>
+          <div id="game-space-r3" class="h-[30%] w-full flex items-center justify-center"></div>
         </div>
       </div>
     </div>
-    <button id="a11y-toggle" class="a11y-main-btn" aria-expanded="false" aria-controls="a11y-panel" aria-label="Abrir opções de acessibilidade">♿</button>
 
-    <!-- Script externo -->
-    <script src="script.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        /* ===========================================================
+       🔹 CONFIGURAÇÕES PERSONALIZÁVEIS
+       =========================================================== */
+        const CONFIG = {
+          // ⏳ Timer do jogo
+          TIME_LIMIT: 45, // tempo total de jogo (segundos)
+          WARNING_THRESHOLD: 10, // quando mudar para cor de aviso
+          ALERT_THRESHOLD: 5, // quando mudar para cor de alerta
+
+          // 🎴 Cartas
+          PREVIEW_DURATION: 6000, // tempo que as cartas ficam viradas no início (ms)
+
+          // 📄 Telas
+          FINAL_SCREEN_DURATION: 15000, // tempo que a tela final permanece (ms)
+          TRANSITION_DURATION: 800, // tempo da transição Fade+Zoom entre telas (ms)
+
+          // 🔊 Sons
+          VOLUME: 0.5, // Volume padrão para todos os sons
+        };
+
+        // Configurações de volume individuais para cada som
+        const AUDIO_VOLUMES = {
+          startScreen: 0.3,
+          playButton: 0.8,
+          timerStart: 0.3,
+          cardFlip: 0.8,
+          correctMatch: 0.4,
+          wrongMatch: 0.9,
+          timerEnd: 0.5,
+          endScreen: 0.8,
+        };
+
+        /* ===========================================================
+       🔹 VARIÁVEIS DO JOGO
+       =========================================================== */
+        const gameGrid = document.getElementById("game-grid");
+        const cardImages = [
+          "assets/carta1.png",
+          "assets/carta2.png",
+          "assets/carta3.png",
+          "assets/carta4.png",
+          "assets/carta5.png",
+          "assets/carta6.png",
+          "assets/carta7.png",
+          "assets/carta8.png",
+          "assets/carta9.png",
+        ];
+
+        const TOTAL_PARES = cardImages.length; // 9 pares no total
+
+        let cards = [];
+        let flippedCards = [];
+        let matchedCards = 0;
+        let canFlip = false;
+
+        const timeLeftEl = document.getElementById("time-left");
+        const timerPathRemaining = document.getElementById("timer-path-remaining");
+        const FULL_DASH_ARRAY = 283;
+        let timeLeft = CONFIG.TIME_LIMIT;
+        let timerAnimationId;
+        let startTime;
+
+        // Caminhos para os arquivos de som na pasta assets/sounds
+        const AUDIO_PATHS = {
+          startScreen: "assets/sounds/start_screen.mp3",
+          playButton: "assets/sounds/play_button.mp3",
+          timerStart: "assets/sounds/timer_start.mp3",
+          cardFlip: "assets/sounds/card_flip.mp3",
+          correctMatch: "assets/sounds/correct_match.mp3",
+          wrongMatch: "assets/sounds/wrong_match.mp3",
+          timerEnd: "assets/sounds/timer_end.mp3",
+          endScreen: "assets/sounds/end_screen.mp3",
+        };
+
+        let backgroundMusic;
+        let timerSound; // Nova variável para controlar o som do timer
+        let endScreenSound; // Nova variável para controlar o som da tela final
+
+        /* ===========================================================
+       🔹 FUNÇÃO: Tocar som de efeito
+       =========================================================== */
+        function playSound(soundPath) {
+          const audio = new Audio(soundPath);
+          audio.volume = AUDIO_VOLUMES[Object.keys(AUDIO_PATHS).find((key) => AUDIO_PATHS[key] === soundPath)] || CONFIG.VOLUME;
+          audio.play().catch((error) => console.error("Erro ao tocar o som:", error));
+        }
+
+        /* ===========================================================
+       🔹 FUNÇÃO: Tocar música de fundo
+       =========================================================== */
+        function playBackgroundMusic() {
+          // Pausa o som da tela final antes de começar a tocar a música de fundo
+          if (endScreenSound) {
+            endScreenSound.pause();
+            endScreenSound.currentTime = 0;
+          }
+
+          if (!backgroundMusic) {
+            backgroundMusic = new Audio(AUDIO_PATHS.startScreen);
+            backgroundMusic.loop = true; // Define a música para tocar em loop
+            backgroundMusic.volume = AUDIO_VOLUMES.startScreen;
+          }
+          backgroundMusic.play().catch((error) => console.error("Erro ao tocar a música de fundo:", error));
+        }
+
+        function pauseBackgroundMusic() {
+          if (backgroundMusic) {
+            backgroundMusic.pause();
+          }
+        }
+
+        // Adiciona uma nova função para parar o som do timer
+        function stopTimerSound() {
+          if (timerSound) {
+            timerSound.pause();
+            timerSound.currentTime = 0;
+          }
+        }
+
+        /* ===========================================================
+       🔹 FUNÇÃO: Troca de telas com Fade + Zoom
+       =========================================================== */
+        function showScreen(screenId) {
+          document.querySelectorAll(".page-transition").forEach((el) => {
+            el.classList.remove("active");
+          });
+
+          const screen = document.getElementById(screenId);
+
+          // Força reflow para resetar animação
+          void screen.offsetWidth;
+
+          screen.classList.add("active");
+        }
+
+        /* ===========================================================
+       🔹 FUNÇÃO: Atualiza quantidade de pares
+       =========================================================== */
+        const updatePares = () => {
+          const pares = matchedCards / 2;
+          document.getElementById("pares-count").textContent = pares;
+
+          // Checa se todos os pares foram encontrados
+          if (pares === TOTAL_PARES) {
+            endGame(true); // Fim de jogo com vitória
+          }
+        };
+
+        /* ===========================================================
+       🔹 FUNÇÃO: Embaralhar cartas
+       =========================================================== */
+        const shuffle = (array) => {
+          for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+          }
+          return array;
+        };
+
+        /* ===========================================================
+       🔹 FUNÇÃO: Criar tabuleiro
+       =========================================================== */
+        const createBoard = () => {
+          gameGrid.innerHTML = "";
+          cards = shuffle([...cardImages, ...cardImages]);
+          matchedCards = 0;
+          updatePares();
+
+          const frag = document.createDocumentFragment();
+
+          cards.forEach((imageSrc, index) => {
+            const cardElement = document.createElement("div");
+            cardElement.classList.add("card", "rounded-lg", "shadow-md", "cursor-pointer", "transition-all", "duration-300");
+            cardElement.setAttribute("data-index", index);
+            cardElement.setAttribute("data-image", imageSrc);
+            cardElement.innerHTML = `
+          <div class="card-inner w-full h-full">
+            <div class="card-front rounded-lg"></div>
+            <div class="card-back rounded-lg">
+              <img src="${imageSrc}" alt="Frente da Carta" class="w-full h-full object-cover rounded-lg" loading="lazy">
+            </div>
+          </div>
+        `;
+            frag.appendChild(cardElement);
+          });
+
+          gameGrid.appendChild(frag);
+        };
+
+        /* ===========================================================
+       🔹 FUNÇÃO: Mostrar cartas no início
+       =========================================================== */
+        const previewCards = () => {
+          const allCards = document.querySelectorAll(".card");
+          allCards.forEach((c) => c.classList.add("flipped"));
+
+          setTimeout(() => {
+            allCards.forEach((c) => c.classList.remove("flipped"));
+            canFlip = true;
+            startTimer();
+          }, CONFIG.PREVIEW_DURATION);
+        };
+
+        /* ===========================================================
+       🔹 FUNÇÃO: Clique nas cartas
+       =========================================================== */
+        gameGrid.addEventListener("click", (event) => {
+          if (!canFlip) return;
+          const card = event.target.closest(".card");
+          if (!card || card.classList.contains("flipped") || card.classList.contains("matched")) return;
+
+          playSound(AUDIO_PATHS.cardFlip);
+          flipCard(card);
+        });
+
+        const flipCard = (card) => {
+          if (!canFlip) return;
+          if (card.classList.contains("flipped") || flippedCards.length === 2) return;
+
+          card.classList.add("flipped");
+          flippedCards.push(card);
+
+          if (flippedCards.length === 2) {
+            canFlip = false;
+            setTimeout(checkMatch, 1000);
+          }
+        };
+
+        const checkMatch = () => {
+          const [card1, card2] = flippedCards;
+          const image1 = card1.dataset.image;
+          const image2 = card2.dataset.image;
+
+          if (image1 === image2) {
+            playSound(AUDIO_PATHS.correctMatch);
+            card1.classList.add("opacity-50", "cursor-not-allowed", "pointer-events-none", "matched");
+            card2.classList.add("opacity-50", "cursor-not-allowed", "pointer-events-none", "matched");
+            matchedCards += 2;
+            updatePares();
+          } else {
+            playSound(AUDIO_PATHS.wrongMatch);
+            card1.classList.remove("flipped");
+            card2.classList.remove("flipped");
+          }
+
+          flippedCards = [];
+          canFlip = true;
+        };
+
+        /* ===========================================================
+       🔹 FUNÇÕES DO TIMER
+       =========================================================== */
+        function startTimer() {
+          // Inicia o som do timer e armazena a referência para controlá-lo
+          timerSound = new Audio(AUDIO_PATHS.timerStart);
+          timerSound.volume = AUDIO_VOLUMES.timerStart;
+          timerSound.play().catch((error) => console.error("Erro ao tocar o som do timer:", error));
+
+          startTime = performance.now();
+          timerPathRemaining.setAttribute("stroke-dasharray", `${FULL_DASH_ARRAY} ${FULL_DASH_ARRAY}`);
+          timerAnimationId = requestAnimationFrame(updateTimer);
+        }
+
+        function updateTimer(timestamp) {
+          const elapsedTime = (timestamp - startTime) / 1000;
+          timeLeft = CONFIG.TIME_LIMIT - elapsedTime;
+
+          if (timeLeft <= 0) {
+            timeLeft = 0;
+            timeLeftEl.innerText = formatTime(timeLeft);
+            setCircleDasharray();
+            endGame();
+            return;
+          }
+
+          timeLeftEl.innerText = formatTime(timeLeft);
+          setCircleDasharray();
+          timerAnimationId = requestAnimationFrame(updateTimer);
+        }
+
+        function formatTime(time) {
+          return Math.ceil(time);
+        }
+
+        function calculateTimeFraction() {
+          return Math.max(0, timeLeft / CONFIG.TIME_LIMIT);
+        }
+
+        function setCircleDasharray() {
+          const circleDasharray = `${(calculateTimeFraction() * FULL_DASH_ARRAY).toFixed(0)} 283`;
+          timerPathRemaining.setAttribute("stroke-dasharray", circleDasharray);
+
+          if (timeLeft <= CONFIG.ALERT_THRESHOLD) {
+            timerPathRemaining.setAttribute("stroke", getComputedStyle(document.documentElement).getPropertyValue("--timer-alert"));
+          } else if (timeLeft <= CONFIG.WARNING_THRESHOLD) {
+            timerPathRemaining.setAttribute("stroke", getComputedStyle(document.documentElement).getPropertyValue("--timer-warning"));
+          } else {
+            timerPathRemaining.setAttribute("stroke", getComputedStyle(document.documentElement).getPropertyValue("--timer-default"));
+          }
+        }
+
+        /* ===========================================================
+       🔹 FUNÇÃO: Encerrar jogo
+       =========================================================== */
+        function endGame(isWin = false) {
+          document.querySelectorAll(".card").forEach((c) => {
+            c.style.pointerEvents = "none";
+          });
+          if (timerAnimationId) cancelAnimationFrame(timerAnimationId);
+
+          // Para o som do timer antes de tocar os outros sons de final de jogo
+          stopTimerSound();
+          playSound(AUDIO_PATHS.timerEnd);
+
+          const finalMessage = document.getElementById("final-message");
+          const pares = matchedCards / 2;
+          let message = "";
+
+          if (isWin) {
+            message = `Muito bem, você encontrou <span class="text-6xl text-green-700 font-extrabold">TODOS</span> os pares!`;
+          } else if (pares === 0) {
+            message = "Mas que pena, você não encontrou nenhum par.";
+          } else if (pares === 1) {
+            message = `Você encontrou <span class="text-7xl text-rose-600 font-extrabold">${pares}</span> par!`;
+          } else if (pares >= 1 && pares <= 8) {
+            message = `Você encontrou <span class="text-6xl text-red-700 font-extrabold">${pares}</span> pares!`;
+          }
+
+          finalMessage.innerHTML = message;
+
+          // Espera 2 segundos antes de mostrar a tela final e tocar o som
+          setTimeout(() => {
+            // Armazena a referência do som de end screen
+            endScreenSound = new Audio(AUDIO_PATHS.endScreen);
+            endScreenSound.volume = AUDIO_VOLUMES.endScreen;
+            endScreenSound.play().catch((error) => console.error("Erro ao tocar o som de tela final:", error));
+
+            showScreen("final-screen");
+
+            // Após a duração da tela final, retorna para a tela inicial e retoma a música
+            setTimeout(() => {
+              showScreen("start-screen");
+              playBackgroundMusic();
+            }, CONFIG.FINAL_SCREEN_DURATION);
+          }, 2000); // 2 segundos
+        }
+
+        /* ===========================================================
+       🔹 FUNÇÃO: Pré-carregar imagens
+       =========================================================== */
+        function preloadImages(list) {
+          setTimeout(() => {
+            list.forEach((src) => {
+              const img = new Image();
+              img.src = src;
+            });
+            new Image().src = "assets/logo.png";
+            new Image().src = "/assets/background.png";
+          }, 50);
+        }
+
+        /* ===========================================================
+       🔹 FUNÇÃO: Iniciar jogo
+       =========================================================== */
+        function startGame() {
+          // Limpa o grid do jogo e reseta o estado
+          gameGrid.innerHTML = "";
+          flippedCards = [];
+          matchedCards = 0;
+          canFlip = false;
+
+          // Reseta o timer para o valor inicial e atualiza a exibição
+          timeLeft = CONFIG.TIME_LIMIT;
+          timeLeftEl.innerText = formatTime(timeLeft);
+          setCircleDasharray();
+
+          pauseBackgroundMusic();
+          playSound(AUDIO_PATHS.playButton);
+          showScreen("game-wrapper");
+          createBoard();
+          preloadImages(cardImages);
+          previewCards();
+        }
+
+        // Toca o som da tela inicial ao carregar
+        playBackgroundMusic();
+
+        document.getElementById("start-button").addEventListener("click", startGame);
+      });
+    </script>
   </body>
 </html>

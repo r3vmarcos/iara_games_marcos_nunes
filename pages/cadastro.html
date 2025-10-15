@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Iara Games - Cadastro</title>
+    <link rel="stylesheet" href="../css/reset.css" />
+    <link rel="stylesheet" href="../css/styles.css" />
+    <link rel="stylesheet" href="../css/cadastro.css" />
+    <link rel="icon" href="../favicon.ico" type="image/x-icon" />
+  </head>
+
+  <body class="modo-escuro">
+    <!-- Cabeçalho -->
+    <header class="cabecalho">
+      <div class="conteudo-cabecalho">
+        <h1>
+          <a href="../index.html" class="logo"><img src="../assets/logo.png" alt="Iara Games Logo" />Iara Games</a>
+        </h1>
+        <nav aria-label="Menu principal">
+          <ul class="menu-navegacao">
+            <li><a href="#">Loja</a></li>
+            <li><a href="#">biblioteca</a></li>
+            <li><a href="#">Fórum</a></li>
+            <li><a href="#">Suporte</a></li>
+            <li><a href="#">Meu Perfil</a></li>
+          </ul>
+        </nav>
+        <div class="acoes-usuario">
+          <button class="botao-instalar" aria-label="Instalar o aplicativo Iara-Games">Instalar Iara-Games</button>
+          <button class="botao-acao login-btn" aria-label="Fazer login na sua conta Iara Games">Logar</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="form-main">
+      <div class="form-container">
+        <h2 class="form-titulo">Criar Conta Iara Games</h2>
+        <p class="form-subtitle">Cadastre-se e explore o melhor do mundo gamer.</p>
+
+        <form class="form-cadastro">
+          <div class="form-group">
+            <label for="nome">Nome Completo</label>
+            <input type="text" id="nome" name="nome" placeholder="Seu nome e sobrenome" required />
+          </div>
+
+          <div class="form-group">
+            <label for="email">E-mail</label>
+            <input type="email" id="email" name="email" placeholder="seuemail@exemplo.com" required />
+          </div>
+
+          <div class="form-group-row">
+            <div class="form-group">
+              <label for="cpf">CPF</label>
+              <input type="text" id="cpf" name="cpf" placeholder="000.000.000-00" required />
+            </div>
+            <div class="form-group">
+              <label for="telefone">Telefone</label>
+              <input type="tel" id="telefone" name="telefone" placeholder="(99) 99999-9999" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="usuario">Nome de Usuário</label>
+            <input type="text" id="usuario" name="usuario" placeholder="Seu apelido no Iara Games" required />
+          </div>
+
+          <div class="form-group">
+            <label for="senha">Senha</label>
+            <input type="password" id="senha" name="senha" placeholder="Mínimo 8 caracteres" required minlength="8" />
+          </div>
+
+          <div class="form-group">
+            <label for="confirmar-senha">Confirmar Senha</label>
+            <input type="password" id="confirmar-senha" name="confirmar-senha" placeholder="Repita sua senha" required minlength="8" />
+          </div>
+
+          <div class="form-group form-terms">
+            <input type="checkbox" id="termos" name="termos" required />
+            <label for="termos">
+              Eu concordo com os
+              <a href="#" aria-label="Termos de Serviço da Iara Games">Termos de Serviço</a> e <a href="#" aria-label="Política de Privacidade da Iara Games">Política de Privacidade</a>.
+            </label>
+          </div>
+
+          <button type="submit" class="form-btn">Criar Conta</button>
+        </form>
+
+        <p class="form-login-link">Já tem uma conta? <a href="#">Faça login aqui</a>.</p>
+      </div>
+    </main>
+
+    <!-- Rodapé (consistente com o index.html) -->
+    <footer class="rodape" aria-label="Rodapé do site">
+      <div class="conteudo-rodape">
+        <p class="texto-rodape">🎮 © 2024 Iara Games 🎮 Todos os direitos reservados 🎮</p>
+      </div>
+    </footer>
+
+    <!-- --------------------------
+        Painel de Acessibilidade
+        -------------------------- -->
+    <div id="a11y-floating" class="a11y-floating" aria-hidden="true">
+      <div id="a11y-panel" class="a11y-panel" role="dialog" aria-modal="true" aria-label="Painel de Acessibilidade">
+        <div class="a11y-header">
+          <h3 class="a11y-title">Acessibilidade</h3>
+          <button id="a11y-close" class="a11y-close-btn" aria-label="Fechar painel de acessibilidade">X</button>
+        </div>
+
+        <div class="a11y-section">
+          <strong>Tamanho do Texto</strong>
+          <div class="a11y-controls">
+            <button class="a11y-btn text-size" data-size="normal">Texto Normal</button>
+            <button class="a11y-btn text-size" data-size="medio">Texto Médio</button>
+            <button class="a11y-btn text-size" data-size="grande">Texto Grande</button>
+          </div>
+        </div>
+
+        <div class="a11y-section">
+          <strong>Visual</strong>
+          <div class="a11y-controls">
+            <button class="a11y-btn visual" data-visual="claro">Visual Claro</button>
+            <button class="a11y-btn visual" data-visual="escuro">Visual Escuro</button>
+            <button class="a11y-btn visual" data-visual="alto-contraste">Alto Contraste</button>
+            <button class="a11y-btn visual" data-visual="monocromatico">Monocromático</button>
+          </div>
+        </div>
+
+        <div class="a11y-section">
+          <strong>Fonte</strong>
+          <div class="a11y-controls">
+            <button class="a11y-btn font-switch" data-font="inter">Inter</button>
+            <button class="a11y-btn font-switch" data-font="lexend">Lexend</button>
+            <button class="a11y-btn font-switch" data-font="baloo">Baloo</button>
+            <button class="a11y-btn font-switch" data-font="system">Padrão</button>
+          </div>
+        </div>
+
+        <div class="a11y-section">
+          <strong>Leitor de Tela</strong>
+          <div class="a11y-controls">
+            <button id="toggle-hover-reader" class="a11y-btn" aria-pressed="false">Leitura por Hover: Off</button>
+            <small class="a11y-note">Segure o mouse sobre um elemento por 1s</small>
+          </div>
+        </div>
+
+        <div class="a11y-section a11y-footer">
+          <button id="reset-a11y" class="a11y-btn">Restaurar Padrões</button>
+        </div>
+      </div>
+    </div>
+    <button id="a11y-toggle" class="a11y-main-btn" aria-expanded="false" aria-controls="a11y-panel" aria-label="Abrir opções de acessibilidade">♿</button>
+
+    <!-- Script externo -->
+    <script src="../js/script.js"></script>
+  </body>
+</html>

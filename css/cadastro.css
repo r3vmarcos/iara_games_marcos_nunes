@@ -1,0 +1,195 @@
+/* Estilos Específicos para a Página de Cadastro */
+
+/* Garante que o container principal se alinhe */
+.form-main {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px 20px;
+  min-height: calc(100vh - 100px); /* Ajusta para preencher a tela */
+}
+
+.form-container {
+  background: #1e2328;
+  padding: 30px 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  width: 100%;
+  max-width: 550px;
+}
+
+.form-titulo {
+  font-size: 1.5rem; /* Relativo à fonte base */
+  font-weight: bold;
+  color: #67c1f5; /* Cor de destaque Iara Games */
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.form-subtitle {
+  font-size: 1rem;
+  color: #8f98a0;
+  margin-bottom: 25px;
+}
+
+.form-cadastro {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Grupo de campos */
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group-row {
+  display: flex;
+  gap: 20px;
+}
+
+.form-group-row .form-group {
+  flex: 1; /* Distribui os campos (CPF/Tel) igualmente */
+}
+
+.form-group label {
+  font-size: 0.875rem; /* Relativo à fonte base */
+  color: #c7d5e0;
+  margin-bottom: 5px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"],
+.form-group input[type="tel"] {
+  padding: 10px;
+  border: 1px solid #2a475e;
+  border-radius: 4px;
+  background: #171a21; /* Fundo mais escuro que o container */
+  color: #c7d5e0;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #67c1f5;
+  box-shadow: 0 0 0 2px rgba(103, 193, 245, 0.3);
+}
+
+/* Estilos para a checkbox e termos */
+.form-terms {
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.form-terms label {
+  margin-bottom: 0;
+  font-size: 0.9rem;
+  color: #8f98a0;
+}
+
+/* Estilo para o checkbox */
+.form-terms input[type="checkbox"] {
+  min-width: 16px;
+  min-height: 16px;
+  background: #171a21;
+  border: 1px solid #2a475e;
+  cursor: pointer;
+}
+
+/* Estilo para os links de Termos */
+.form-terms a {
+  color: #67c1f5; /* Cor de destaque */
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.form-terms a:hover {
+  color: #4b9ccb;
+  text-decoration: underline;
+}
+
+/* Botão de Submissão */
+.form-btn {
+  background: #5c7e10;
+  color: #d2efa9;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-top: 10px;
+}
+
+.form-btn:hover {
+  background: #6a9113;
+}
+
+/* Link de Login */
+.form-login-link {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 0.9rem;
+  color: #8f98a0;
+}
+
+.form-login-link a {
+  color: #67c1f5;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.form-login-link a:hover {
+  color: #4b9ccb;
+  text-decoration: underline;
+}
+
+/* -------------------------------------
+   Estilos MODO CLARO (Acessibilidade)
+   ------------------------------------- */
+
+body.modo-claro .form-container {
+  background: #ffffff; /* Fundo branco */
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+body.modo-claro .form-group label {
+  color: #222; /* Texto do label escuro */
+}
+
+body.modo-claro .form-group input[type="text"],
+body.modo-claro .form-group input[type="email"],
+body.modo-claro .form-group input[type="password"],
+body.modo-claro .form-group input[type="tel"] {
+  background: #f7f7f7; /* Fundo do input levemente cinza */
+  color: #222; /* Texto digitado escuro */
+  border-color: #aaa;
+}
+
+body.modo-claro .form-group input:focus {
+  border-color: #67c1f5;
+  box-shadow: 0 0 0 2px rgba(103, 193, 245, 0.5);
+}
+
+body.modo-claro .form-subtitle,
+body.modo-claro .form-login-link {
+  color: #555; /* Cor do subtítulo e link de login mais escuro */
+}
+
+body.modo-claro .form-terms label {
+  color: #555; /* Texto dos termos escuro */
+}
+
+/* Responsividade para telas muito pequenas */
+@media (max-width: 500px) {
+  .form-group-row {
+    flex-direction: column;
+    gap: 0;
+  }
+}

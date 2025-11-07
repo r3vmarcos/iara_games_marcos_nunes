@@ -1,0 +1,17 @@
+:root{
+    --azul-vibrante: #0073FF;
+    --verde-agua: #00A688;
+    --bg-secundario: #F9FAFB;
+    --texto-principal: #1A1A1A;
+    --texto-secundario: #2C2C2C;
+    --detalhes-bordas: #E5E7EB;
+}
+
+body{
+    font-family: "Baloo 2";
+}
+
+h1, h2, h3{
+    font-family: "Sora";
+    font-weight: bold;
+}

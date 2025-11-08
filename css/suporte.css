@@ -1,0 +1,65 @@
+header {
+    border-bottom: 1px solid var(--detalhes-bordas);
+    padding: 8px 0;
+}
+
+main {
+    margin-top: 50px;
+}
+
+#h2-principal{
+    max-width: 500px;
+}
+
+#cta-chamado {
+    background: var(--azul-vibrante);
+    padding: 8px 16px;
+    margin: 16px 0 30px 0;
+    border: none;
+    color: #FFF;
+    border-radius: 4px;
+}
+
+#ajustar-tabela{
+    width: 100%;
+    overflow: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid var(--detalhes-bordas);
+    border-spacing: 10px;
+
+}
+
+table th{
+    font-family: 'Sora', sans-serif
+}
+
+td, th{
+    padding: 8px 20px;
+    border-bottom: 1px solid var(--detalhes-bordas);
+
+}
+
+
+/* #container-suporte h2{
+    max-width: 132px;
+} */
+
+#section_contatos {
+    margin-top: 36px;
+    border: 1px solid var(--detalhes-bordas);
+    background-color: var(--bg-secundario);
+    padding: 20px 0
+}
+i{
+    font-size: 20px;
+}
+
+@media (max-width: 768px){
+    html{
+        font-size: 87.5%;
+    }
+}

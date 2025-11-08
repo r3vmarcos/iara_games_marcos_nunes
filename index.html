@@ -18,46 +18,50 @@
   <body class="modo-escuro">
     <!-- Cabeçalho -->
 
-    <header class="ig-header" role="banner">
-      <div class="ig-header__bar">
-        <div class="ig-header__left">
+    <header class="cabecalho mb-2" role="banner">
+      <div class="container-fluid">
+        <div class="barra-cabecalho d-flex justify-content-between align-items-center">
+          
+          <!-- LADO ESQUERDO -->
+          <div class="cabecalho-esquerda d-flex align-items-center gap-3">
 
-        <!-- ÍCONE COM FONTE -->
-        <button class="ig-iconbtn" aria-label="Abrir menu">
-        <i class="fas fa-bars ig-icon" aria-hidden="true"></i>
-        </button>
+            <!-- Botão hamburguer (visível só no mobile) -->
+            <button class="botao-icone d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal" aria-label="Abrir menu">
+              <i class="fas fa-bars icone" aria-hidden="true"></i>
+            </button>
 
-        <nav class="ig-nav" aria-label="Navegação principal">
-          <ul class="ig-nav__list">
-            <li class="ig-nav__item"><a class="fs-5 ig-nav__link is-active" href="#">Home</a></li>
-            <li class="ig-nav__item"><a class="ig-nav__link" href="#">Loja</a></li>
-            <li class="ig-nav__item"><a class="ig-nav__link" href="#">Biblioteca</a></li>
-            <li class="ig-nav__item"><a class="ig-nav__link" href="#">Forum</a></li>
-            <li class="ig-nav__item"><a class="ig-nav__link" href="#">Suporte</a></li>
-          </ul>
-        </nav>
+            <!-- Navegação principal -->
+            <nav class="navegacao collapse d-lg-block" id="menuPrincipal" aria-label="Navegação principal">
+              <ul class="lista-navegacao d-flex flex-column flex-lg-row gap-3 m-0 p-0">
+                <li><a class="fs-5 fw-bold px-2 py-2 text-decoration-none link-navegacao-ativo" href="#">Home</a></li>
+                <li><a class=" d-inline-block px-2 py-2 rounded-2 text-decoration-none link-navegacao" href="#">Loja</a></li>
+                <li><a class=" d-inline-block px-2 py-2 rounded-2 text-decoration-none link-navegacao" href="#">Biblioteca</a></li>
+                <li><a class=" d-inline-block px-2 py-2 rounded-2 text-decoration-none link-navegacao" href="#">Fórum</a></li>
+                <li><a class=" d-inline-block px-2 py-2 rounded-2 text-decoration-none link-navegacao" href="#">Suporte</a></li>
+              </ul>
+            </nav>
+          </div>
+
+          <!-- LADO DIREITO -->
+          <div class="cabecalho-direita d-flex align-items-center gap-3">
+            <button class="botao-icone" aria-label="Notificações">
+              <img class="icone" src="./assets/page/notification.png" alt="" aria-hidden="true">
+            </button>
+
+            <button class=" bg-transparent botao-icone" aria-label="Atalhos">
+              <img class=" bg-transparent icone" src="./assets/page/userfoto.png" alt="" aria-hidden="true">
+            </button>
+
+            <span class="usuario d-none d-md-flex align-items-center bg-transparent">
+              <span class="bg-transparent usuario-nome">NomeDeUsuario</span>
+            </span>
+
+            <button class=" bg-transparent botao-icone" aria-label="Mais opções">
+              <img class=" icone" src="./assets/LogoOficial.png" alt="" aria-hidden="true">
+            </button>
+          </div>
+        </div>
       </div>
-
-      <div class="ig-header__right">
-
-      <!-- ÍCONE COM IMAGEM PERSONALIZADA -->
-        <button class="ig-iconbtn" aria-label="Notificações">
-        <img class="ig-icon" src="./assets/page/notification.png" alt="" aria-hidden="true">
-        </button>
-
-        <button class="ig-iconbtn" aria-label="Atalhos">
-        <img class="ig-icon" src="./assets/page/userfoto.png" alt="" aria-hidden="true">
-        </button>
-
-        <span class="ig-user">
-        <span class="ig-user__name">NomeDeUsuario</span>
-        </span>
-
-        <button class="ig-iconbtn" aria-label="Mais opções">
-        <img class="ig-icon" src="./assets/LogoOficial.png" alt="" aria-hidden="true">
-        </button>
-      </div>
-    </div>
     </header>
 
     <!-- Conteúdo Principal -->
@@ -69,85 +73,6 @@
           <h2 id="titulo-festival" class="logo-festival">Iara Games de Verão</h2>
           <p class="datas-festival">22 de Setembro</p>
           <p class="descricao-festival">Descontos, Demos e Muito Mais</p>
-        </div>
-      </section>
-
-      <!-- Seção em Destaque -->
-      <section class="secao-destaque" aria-labelledby="titulo-destaques">
-        <aside class="w-20 p-3 rounded barra-lateral" aria-label="Navegação lateral de recomendações">
-          <h2 id="titulo-destaques" class="mb-1 fs-5">Marcadores</h2>
-          <a href="#" class=" d-block text-decoration-none py-2 fs-6 item-barra">Recomendados</a>
-          <a href="#" class=" d-block text-decoration-none py-2 fs-6 item-barra">Lançamentos</a>
-          <a href="#" class=" d-block text-decoration-none py-2 fs-6 item-barra">5 Estrelas</a>
-          <a href="#" class=" d-block text-decoration-none py-2 fs-6 item-barra">Por Amigos</a>
-          <a href="#" class=" d-block text-decoration-none py-2 fs-6 item-barra">Por Curadores</a>
-          <a href="#" class=" d-block text-decoration-none py-2 fs-6 item-barra">Mais Vendidos</a>
-          <a href="#" class=" d-block text-decoration-none py-2 fs-6 item-barra">Populares</a>
-          <a href="#" class=" d-block text-decoration-none py-2 fs-6 item-barra">Melhor Avaliação</a>
-          <a href="#" class=" d-block text-decoration-none py-2 fs-6 item-barra">Queridos dos Influêncers</a>
-          <a href="#" class=" d-block text-decoration-none py-2 fs-6 item-barra">Tags</a>
-          <a href="#" class=" d-block text-decoration-none py-2 fs-6 item-barra">Iara Deck</a>
-        </aside>
-
-        <div class="principal-destaque">
-          <!--CARROSSEL JS DRIVEN -->
-          <div class="carousel-container carousel-large" id="carousel-main">
-            <div class="carousel-wrapper">
-              <div class="carousel-track">
-                <!-- SLIDE 1 -->
-                <div class="carousel-item">
-                  <img src="assets/carrossel/carrossel_slide_1.png" alt="Hollow Knight: Silksong" class="carousel-image" />
-                  <div class="carousel-overlay">
-                    <div class="carousel-title">Hollow Knight: Silksong</div>
-                    <div class="carousel-pricing">
-                      <span class="carousel-discount">-20%</span>
-                      <div class="carousel-prices">
-                        <span class="carousel-original">R$ 74,00</span>
-                        <span class="carousel-final">R$ 59,19</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!-- SLIDE 2 -->
-                <div class="carousel-item">
-                  <img src="assets/carrossel/carrossel_slide_2.png" alt="Metal Gear Solid 3: Snake Eater" class="carousel-image" />
-                  <div class="carousel-overlay">
-                    <div class="carousel-title">Metal Gear Solid 3: Snake Eater</div>
-                    <div class="carousel-pricing">
-                      <span class="carousel-discount">NOVO</span>
-                      <div class="carousel-prices">
-                        <span class="carousel-original">R$ 349,90</span>
-                        <span class="carousel-final">R$ 349,90</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!-- SLIDE 3 -->
-                <div class="carousel-item">
-                  <img src="assets/carrossel/carrossel_slide_3.png" alt="Marvel Rivals" class="carousel-image" />
-                  <div class="carousel-overlay">
-                    <div class="carousel-title">Marvel Rivals</div>
-                    <div class="carousel-pricing">
-                      <span class="carousel-discount">GRÁTIS</span>
-                      <div class="carousel-prices">
-                        <span class="carousel-original"></span>
-                        <span class="carousel-final">Grátis</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- Controles de navegação para JS -->
-            <button class="carousel-nav prev" data-nav="-1" aria-label="Slide anterior">
-              <i class="fas fa-chevron-left"></i>
-            </button>
-            <button class="carousel-nav next" data-nav="1" aria-label="Próximo slide">
-              <i class="fas fa-chevron-right"></i>
-            </button>
-            <!-- Pontos de navegação para JS -->
-            <div class="carousel-dots" id="dots-carousel-main" aria-label="Navegação por pontos"></div>
-          </div>
         </div>
       </section>
 
